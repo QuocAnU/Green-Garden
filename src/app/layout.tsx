@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Open_Sans, Sansita_Swashed } from 'next/font/google'
+import { Header } from "@/components/common/header";
+import { Footer } from "@/components/common/footer";
+
+export const openSans = Open_Sans({ subsets: ['latin'] })
+export const sansitaSwash = Sansita_Swashed({ subsets: ['latin'] })
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,9 +34,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${openSans.className} antialiased`}
         >
+          <Header />
           {children}
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
