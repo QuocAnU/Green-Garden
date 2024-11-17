@@ -30,3 +30,5 @@ body {
 [type="search"]::-webkit-search-cancel-button {
   appearance: none;
 }
+
+@import '~font-awesome/css/font-awesome.css';
