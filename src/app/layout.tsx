@@ -5,6 +5,12 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { ClerkProvider } from "@clerk/nextjs";
+import { Open_Sans, Sansita_Swashed } from 'next/font/google'
+import { Header } from "@/components/common/header";
+import { Footer } from "@/components/common/footer";
+
+export const openSans = Open_Sans({ subsets: ['latin'] })
+export const sansitaSwash = Sansita_Swashed({ subsets: ['latin'] })
 
 // Load custom fonts
 const geistSans = localFont({
@@ -42,9 +48,11 @@ export default function RootLayout({
         />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} ${openSans.className} antialiased`}
         >
+          <Header />
           {children}
+          <Footer />
         </body>
       </html>
     </ClerkProvider>
