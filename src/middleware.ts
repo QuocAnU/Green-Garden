@@ -7,8 +7,11 @@ const isPublicRoute = createRouteMatcher([
   "/product",
   "/product/(.*)",
   "/checkout",
-  "/policy",
+  "/policy",  
+  '/gioithieu',
+  '/lienhe',
 ]);
+ 
 
 export default clerkMiddleware((auth, req) => {
   if (!isPublicRoute(req)) {
