@@ -1,0 +1,75 @@
+/* OrderDetailsModal.css */
+
+/* Overall container for the modal content */
+.order-details {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: white; /* Ensure background is white */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for better visibility */
+  border-radius: 8px; /* Rounded corners for better design */
+}
+
+/* Header section of the order details */
+.order-header {
+  margin-bottom: 20px;
+}
+
+/* Order table styles */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.order-table th,
+.order-table td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.order-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.order-table td {
+  background-color: #fff;
+}
+
+.order-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.order-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Styling for the summary section */
+.order-summary {
+  font-size: 16px;
+}
+
+.order-summary p {
+  margin: 5px 0;
+  text-align: right;
+}
+
+.discount {
+  color: red;
+}
+
+.total {
+  font-weight: bold;
+  color: green;
+}
+
+/* Print button and close button styling */
+.ant-btn {
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.ant-btn:hover {
+  opacity: 0.8;
+}
