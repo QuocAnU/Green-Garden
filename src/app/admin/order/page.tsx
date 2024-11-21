@@ -1,10 +1,13 @@
 "use client"; // Add this line at the top of the file
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
+import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import Filters from './../components/Filters'; // Adjust the import path as necessary
 import OrderDetailsModal from './OrderDetailsModal'; // Import the new modal component
 import moment from 'moment';
+import { useAuth } from '@clerk/nextjs';
+import OrderApi from '@/api/Order';
 
 // Sample data for the table
 const initialData = [
@@ -46,6 +49,26 @@ export default function OrderManagement() {
     const [profitRange, setProfitRange] = useState<number[]>([]);
     const [selectedOrder, setSelectedOrder] = useState<any | null>(null); // State to hold the selected order
     const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
+
+    const [orders, setOrders] = useState([]);
+
+    const { getToken } = useAuth();
+
+    useEffect(() => {
+        const fetchOrders = async () => {   
+            try {
+                const token = await getToken();
+                const response = await OrderApi.getAll(token);
+                if(response && response.data && response.data.metadata) {
+                    setOrders(response.data.metadata);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        };
+
+        fetchOrders();
+    }, [getToken]);
 
     // Filter the data based on the search and filter criteria
     const filteredData = data.filter(item => {
@@ -105,12 +128,25 @@ export default function OrderManagement() {
             render: (text: string) => moment(text).format('YYYY-MM-DD'),
         },
         {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-                <Button onClick={() => showOrderDetails(record)}>View Details</Button>
-            ),
-        },
+        title: 'Action',
+        key: 'action',
+        render: (_, record) => (
+            <div className='flex justify-center'>
+                <Button
+                    icon={<EyeOutlined />}
+                    onClick={() => showOrderDetails(record)}
+                    style={{ marginRight: 8 }}
+                >
+                </Button>
+                <Button
+                    icon={<DeleteOutlined />}
+                    // onClick={() => deleteOrder(record)}
+                    danger
+                >
+                </Button>
+            </div>
+        ),
+    },
     ];
 
     // Function to show order details in modal

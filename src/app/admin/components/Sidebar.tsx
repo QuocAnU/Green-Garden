@@ -11,8 +11,18 @@ export default function Sidebar() {
           </Link>
         </li>
         <li className="mb-4">
-          <Link href="/order" className="text-gray-700 hover:text-blue-500">
+          <Link href="/admin/order" className="text-gray-700 hover:text-blue-500">
             Order Management
+          </Link>
+        </li>
+        <li className="mb-4">
+          <Link href="/admin/product" className="text-gray-700 hover:text-blue-500">
+            Product Management
+          </Link>
+        </li>
+        <li className="mb-4">
+          <Link href="/admin/customer" className="text-gray-700 hover:text-blue-500">
+            Customer Management
           </Link>
         </li>
       </ul>
