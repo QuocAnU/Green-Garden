@@ -11,7 +11,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main content area */}
       <div className="flex flex-col flex-1">
         {/* Header */}
-        <Header />
+        {/* <Header /> */}
         
         {/* Main content */}
         <main className="p-6 flex-1 bg-white shadow-md rounded-lg">
