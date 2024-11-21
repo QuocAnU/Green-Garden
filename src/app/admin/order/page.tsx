@@ -1,7 +1,7 @@
 "use client"; // Add this line at the top of the file
 
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Tag, Select } from 'antd';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import Filters from './../components/Filters'; // Adjust the import path as necessary
 import OrderDetailsModal from './OrderDetailsModal'; // Import the new modal component
@@ -9,39 +9,48 @@ import moment from 'moment';
 import { useAuth } from '@clerk/nextjs';
 import OrderApi from '@/api/Order';
 
-// Sample data for the table
-const initialData = [
-    {
-        key: '1',
-        orderId: '12345',
-        customerName: 'John Doe',
-        products: [
-            { name: 'Laptop', quantity: 1, price: 1500.00 },
-            { name: 'Mouse', quantity: 2, price: 25.00 },
-        ],
-        total: 1550.00,
-        profit: 500.00,
-        status: 'Shipped',
-        createdAt: '2024-01-01',
-    },
-    {
-        key: '2',
-        orderId: '67890',
-        customerName: 'Jane Smith',
-        products: [
-            { name: 'Smartphone', quantity: 1, price: 800.00 },
-        ],
-        total: 800.00,
-        profit: 200.00,
-        status: 'Processing',
-        createdAt: '2024-01-05',
-    },
-    // Add more sample data as needed
-];
+const { Option } = Select;
 
+const StatusCell = ({ status, record, onStatusChange }: any) => {
+    const [editing, setEditing] = useState(false);
+
+    const handleChange = (newStatus: string) => {
+        onStatusChange(newStatus, record.key);
+        setEditing(false);
+    };
+
+    return editing ? (
+        <Select
+            defaultValue={status}
+            style={{ width: 120 }}
+            onChange={handleChange}
+            onBlur={() => setEditing(false)} // Exit edit mode on blur
+        >
+            <Option value="Pending">Pending</Option>
+            <Option value="Completed">Completed</Option>
+            <Option value="Cancelled">Cancelled</Option>
+            <Option value="Refunded">Refunded</Option>
+            <Option value="Shipped">Shipped</Option>
+            <Option value="Delivered">Delivered</Option>
+            <Option value="Processing">Processing</Option>
+        </Select>
+    ) : (
+        <Tag
+            color={status === 'Pending' ? 'orange' 
+                : status === 'Completed' ? 'green' 
+                : status === 'Cancelled' ? 'red' :
+                status === 'Refunded' ? 'blue' :
+                status === 'Shipped' ? 'blue' :
+                status === 'Delivered' ? 'green' :
+                'blue'}
+            onClick={() => setEditing(true)}
+        >
+            {status}
+        </Tag>
+    );
+};
 
 export default function OrderManagement() {
-    const [data] = useState(initialData); // Keep data constant for this example
     const [searchText, setSearchText] = useState('');
     const [dateRange, setDateRange] = useState<any>(null);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
@@ -70,57 +79,58 @@ export default function OrderManagement() {
         fetchOrders();
     }, [getToken]);
 
+    const handleStatusChange = (newStatus: string, key: string) => {
+        const updatedOrders = orders.map(order =>
+            order.key === key ? { ...order, status: newStatus } : order
+        );
+        setOrders(updatedOrders);
+    };
+
+
     // Filter the data based on the search and filter criteria
-    const filteredData = data.filter(item => {
-        const isOrderIdMatch = item.orderId.includes(searchText);
-        const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
+    const filteredData = orders.filter(item => {
+        const isOrderIdMatch = item.orderCode.includes(searchText);
+        // const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
         const isDateMatch = !dateRange || (moment(item.createdAt).isBetween(dateRange[0], dateRange[1], null, '[]'));
         const isStatusMatch = !statusFilter || item.status === statusFilter;
-        const isTotalMatch = (totalRange.length === 0 || (item.total >= totalRange[0] && item.total <= totalRange[1]));
-        const isProfitMatch = (profitRange.length === 0 || (item.profit >= profitRange[0] && item.profit <= profitRange[1]));
+        const isTotalMatch = (totalRange.length === 0 || (item.totalAmount >= totalRange[0] && item.totalAmount <= totalRange[1]));
 
-        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch && isTotalMatch && isProfitMatch;
+        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch && isTotalMatch;
     });
 
     // Define columns for the table
     const columns = [
         {
-            title: 'Order ID',
-            dataIndex: 'orderId',
-            key: 'orderId',
+            title: 'Order Code',
+            dataIndex: 'orderCode',
+            key: 'orderCode',
         },
+        // {
+        //     title: 'Customer Name',
+        //     dataIndex: 'customerName',
+        //     key: 'customerName',
+        // },
         {
-            title: 'Customer Name',
-            dataIndex: 'customerName',
-            key: 'customerName',
-        },
-        {
-            title: 'Product',
-            dataIndex: 'product',
-            key: 'product',
-        },
-        {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            title: 'Customer ID',
+            dataIndex: 'customerID',
+            key: 'customerID',
         },
         {
             title: 'Total',
-            dataIndex: 'total',
-            key: 'total',
-            render: (text: number) => `$${text.toFixed(2)}`,
+            dataIndex: 'totalAmount',
+            key: 'totalAmount',
+            render: (text: number) => `$${text}`,
         },
-        {
-            title: 'Profit',
-            dataIndex: 'profit',
-            key: 'profit',
-            render: (text: number) => `$${text.toFixed(2)}`,
-        },
+
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            render: (status: string, record: any) => (
+                <StatusCell status={status} record={record} onStatusChange={handleStatusChange} />
+            ),
         },
+
         {
             title: 'Created At',
             dataIndex: 'createdAt',
@@ -163,8 +173,6 @@ export default function OrderManagement() {
 
     return (
         <div>
-            <h1>Order Management</h1>
-
             {/* Filters Component */}
             <Filters
                 searchText={searchText}
@@ -177,6 +185,7 @@ export default function OrderManagement() {
                 setTotalRange={setTotalRange}
                 profitRange={profitRange}
                 setProfitRange={setProfitRange}
+                status={true}
             />
 
             <Table columns={columns} dataSource={filteredData} />
