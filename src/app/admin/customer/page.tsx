@@ -6,18 +6,44 @@ import Filters from './../components/Filters'; // Adjust the import path as nece
 import { useAuth } from '@clerk/nextjs';
 import UserApi from '@/api/User';
 
+// Type for user details
+interface User {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    banned: boolean;
+}
+
+// Response type for the API call
+interface UserResponse {
+    id: string;
+    firstName: string;
+    lastName: string;
+    banned: boolean;
+    emailAddresses: { emailAddress: string }[];
+}
+
 export default function CustomerManagement() {
-    const [searchText, setSearchText] = useState('');
-    const [users, setUsers] = useState([]);
+    const [searchText, setSearchText] = useState<string>(''); // search text state
+    const [users, setUsers] = useState<User[]>([]); // users data state
     const { getToken } = useAuth();
 
+    // Fetch users on mount or when the token changes
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const token = await getToken();
                 const response = await UserApi.getAll(token);
                 if (response && response.data && response.data.metadata) {
-                    setUsers(response.data.metadata.data);
+                    const usersData = response.data.metadata.data.map((user: UserResponse) => ({
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.emailAddresses[0]?.emailAddress || '', // Handle cases where emailAddresses might be empty
+                        banned: user.banned,
+                    }));
+                    setUsers(usersData);
                 }
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -26,11 +52,14 @@ export default function CustomerManagement() {
         fetchUsers();
     }, [getToken]);
 
+    // Toggle ban status
     const toggleBanStatus = async (userId: string, currentStatus: boolean) => {
         try {
             const token = await getToken();
+            const response = currentStatus
+                ? await UserApi.unBanUser(token, userId)
+                : await UserApi.banUser(token, userId);
 
-            const response = currentStatus ? await UserApi.unBanUser(token, userId) : await UserApi.banUser(token, userId);
             if (response && response.status === 200) {
                 message.success(`User ${!currentStatus ? 'banned' : 'unbanned'} successfully.`);
                 setUsers((prevUsers) =>
@@ -45,21 +74,14 @@ export default function CustomerManagement() {
         }
     };
 
-
-    const formatData = users.map((user: any) => ({
-        email: user.emailAddresses[0].emailAddress,
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        banned: user.banned,
-    }));
-
-    const filteredData = formatData.filter((user: any) => {
+    // Filter data based on search text
+    const filteredData = users.filter((user) => {
         const name = `${user.firstName} ${user.lastName}`.toLowerCase();
         const email = user.email.toLowerCase();
-        return name.includes(searchText.toLowerCase()) || email.includes(searchText.toLowerCase()) || statusMatch;
+        return name.includes(searchText.toLowerCase()) || email.includes(searchText.toLowerCase());
     });
 
+    // Table columns
     const columns = [
         {
             title: 'Customer ID',
@@ -85,10 +107,10 @@ export default function CustomerManagement() {
             title: 'Ban',
             dataIndex: 'banned',
             key: 'banned',
-            render: (text: boolean, record: any) => (
+            render: (text: boolean, record: User) => (
                 <Button
-                    type = 'primary'
-                    danger = {text}
+                    type='primary'
+                    danger={text}
                     onClick={() => toggleBanStatus(record.id, text)}
                 >
                     {text ? 'Unban' : 'Ban'}

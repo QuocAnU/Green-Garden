@@ -1,10 +1,11 @@
 // types.ts
-interface ReviewFormData {
-  rating: number;
-  name: string;
-  email: string;
-  review: string;
-}
+
+// interface ReviewFormData {
+//   rating: number;
+//   name: string;
+//   email: string;
+//   review: string;
+// }
 
 // schema.ts
 import { z } from "zod";
@@ -28,7 +29,6 @@ import {
   Input,
   Rate,
   Button,
-  Space,
   message,
   Typography,
 } from "antd";

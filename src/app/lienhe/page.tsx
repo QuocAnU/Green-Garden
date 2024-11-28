@@ -7,7 +7,6 @@ import Email from '@/images/email.svg'
 import Social from '@/images/social.svg'
 import Hotline from '@/images/hotline.svg'
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
-import { useEffect, useState } from "react"
 
 const CONTACTLIST = [
     {
@@ -34,7 +33,6 @@ const CONTACTLIST = [
 
 const Lienhe = () => {
     const position = { lat: 10.773, lng: 106.659 };
-    const placeID = "ChIJ6YEP2MMudTERnqh1Fysuhp4";
 
     return (
         <>

@@ -9,9 +9,11 @@ import OrderApi from "@/api/Order";
 import { useAuth } from "@clerk/nextjs";
 import { Table } from "antd";
 
+import { Order } from "../order/page";
+
 export default function DashboardPage() {
-  const [orders, setOrders] = useState([]);
-  const [countOrders, setCountOrders] = useState(0);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [countOrders, setCountOrders] = useState<string>("");
 
   const { getToken } = useAuth();
 
@@ -22,9 +24,12 @@ export default function DashboardPage() {
         const token = await getToken();
         const response = await OrderApi.getAll(token);
         if (response && response.data && response.data.metadata) {
-          const sortedOrders = response.data.metadata.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          const sortedOrders = response.data.metadata.sort((a: Order, b: Order) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
           setOrders(sortedOrders.slice(0, 10));
-          setCountOrders(response.data.metadata.length);
+          const totalOrders = response.data.metadata.length.toString();
+          setCountOrders(totalOrders);
         }
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -33,7 +38,7 @@ export default function DashboardPage() {
     fetchOrders();
   }, [getToken]);
 
-  const formatData = orders.map((order) => ({
+  const formatData = orders.map((order: Order) => ({
     Id: order._id,
     customer: order.customerName,
     status: order.status,
@@ -65,7 +70,7 @@ export default function DashboardPage() {
   return (
     <div className="grid gap-6">
       <div className="grid grid-cols-4 gap-4">
-        <DashboardCard title="New Orders" value="34,567" change="+2.00%" icon = {faCartShopping} />
+        <DashboardCard title="New Orders" value={countOrders} change="+2.00%" icon = {faCartShopping} />
         <DashboardCard title="Total Income" value="$74,567" change="+5.45%" icon = {faChartLine} />
         <DashboardCard title="Total Expense" value="$24,567" change="-2.00%" icon = {faChartPie} />
         <DashboardCard title="New Orders" value="34,567" change="+2.00%" icon = {faUser} />

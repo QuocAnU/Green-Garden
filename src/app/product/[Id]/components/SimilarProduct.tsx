@@ -86,7 +86,7 @@ const SimilarProducts: React.FC = () => {
         ]}
       >
         {MOCK_PRODUCTS.map((product) => (
-          <div className="px-2">
+          <div className="px-2" key={product.id}>
             <ProductCard {...product} />
           </div>
         ))}

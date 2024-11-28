@@ -1,7 +1,6 @@
 "use client";
 
 // components/CartItem.tsx
-import Image from "next/image";
 import { InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 

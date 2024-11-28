@@ -8,10 +8,24 @@ import OrderDetailsModal from './OrderDetailsModal'; // Import the new modal com
 import moment from 'moment';
 import { useAuth } from '@clerk/nextjs';
 import OrderApi from '@/api/Order';
+import { Product } from '../product/page';
+export interface Order {
+    _id: string;
+    key: string;
+    customerName: string;
+    email: string;
+    phone: string;
+    address: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    products: Product[];
+}
 
 const { Option } = Select;
 
-const StatusCell = ({ status, record, onStatusChange }: any) => {
+const StatusCell = ({ status, record, onStatusChange }: { status: string; record: Order; onStatusChange: (newStatus: string, key: string) => void; }) => {
     const [editing, setEditing] = useState(false);
 
     const handleChange = (newStatus: string) => {
@@ -50,16 +64,16 @@ const StatusCell = ({ status, record, onStatusChange }: any) => {
     );
 };
 
+
 export default function OrderManagement() {
     const [searchText, setSearchText] = useState('');
-    const [dateRange, setDateRange] = useState<any>(null);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
     const [totalRange, setTotalRange] = useState<number[]>([]);
     const [profitRange, setProfitRange] = useState<number[]>([]);
-    const [selectedOrder, setSelectedOrder] = useState<any | null>(null); // State to hold the selected order
+    const [selectedOrder, setSelectedOrder] = useState<string>(''); // State to hold the selected order
     const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
 
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState<Order[]>([]);
 
     const { getToken } = useAuth();
 
@@ -91,9 +105,8 @@ export default function OrderManagement() {
     const filteredData = orders.filter(item => {
         const isOrderIdMatch = item._id.includes(searchText);
         const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
-        const isDateMatch = !dateRange || (moment(item.orderDate).isBetween(dateRange[0], dateRange[1], null, '[]'));
         const isStatusMatch = !statusFilter || item.status === statusFilter;
-        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch;
+        return (isOrderIdMatch || isNameMatch)  && isStatusMatch;
     });
 
     // Define columns for the table
@@ -119,7 +132,7 @@ export default function OrderManagement() {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (status: string, record: any) => (
+            render: (status: string, record: Order) => (
                 <StatusCell status={status} record={record} onStatusChange={handleStatusChange} />
             ),
         },
@@ -133,7 +146,7 @@ export default function OrderManagement() {
         {
         title: 'Action',
         key: 'action',
-        render: (_, record) => (
+        render: (_: unknown, record: Order) => (
             <div className='flex justify-center'>
                 <Button
                     icon={<EyeOutlined />}
@@ -153,7 +166,7 @@ export default function OrderManagement() {
     ];
 
     // Function to show order details in modal
-    const showOrderDetails = (order: any) => {
+    const showOrderDetails = (order: Order) => {
         console.log(order);
         setSelectedOrder(order._id);
         setIsModalVisible(true);
@@ -162,7 +175,7 @@ export default function OrderManagement() {
     // Handle modal close
     const handleModalClose = () => {
         setIsModalVisible(false);
-        setSelectedOrder(null);
+        setSelectedOrder("");
     };
 
     return (
@@ -171,8 +184,6 @@ export default function OrderManagement() {
             <Filters
                 searchText={searchText}
                 setSearchText={setSearchText}
-                dateRange={dateRange}
-                setDateRange={setDateRange}
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
                 totalRange={totalRange}

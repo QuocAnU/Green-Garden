@@ -4,16 +4,19 @@ import React from 'react';
 import { Modal, Form, Input, InputNumber, Button, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
+
+import { NewProduct } from '../../product/page';
+
 interface CreateProductModalProps {
     visible: boolean;
     onCancel: () => void;
-    onCreate: (newProduct: any) => void;
+    onCreate: (newProduct: NewProduct ) => void;
 }
 
 const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCancel, onCreate }) => {
     const [form] = Form.useForm();
 
-    const handleCreateProduct = (values: any) => {
+    const handleCreateProduct = (values: NewProduct) => {
         onCreate(values); 
         form.resetFields(); 
     };
@@ -94,7 +97,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                                     </Form.Item>
 
                                     <Button
-                                        type="danger"
+                                        danger
                                         onClick={() => remove(name)}
                                     >
                                         Remove
