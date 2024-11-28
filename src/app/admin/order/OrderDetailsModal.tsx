@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Modal, Button } from 'antd';
+import OrderApi from '@/api/Order';
 import dynamic from 'next/dynamic';
 import './OrderDetailsModal.css';
+
+import { useAuth } from '@clerk/nextjs';
 
 // Import html2pdf.js dynamically with the correct type
 const html2pdf = dynamic(() => import('html2pdf.js'), { ssr: false }) as unknown as (element: HTMLElement, options?: Html2PdfOptions) => void;
@@ -19,23 +22,31 @@ interface Product {
 interface OrderDetailsModalProps {
   visible: boolean;
   onClose: () => void;
-  order: {
-    orderId: string;
-    customerName: string;
-    products: Product[];
-    subtotal: number;
-    shipping: number;
-    discount: number;
-    total: number;
-  } | null;
+  orderID: string;
 }
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose, order }) => {
-  const handlePrint = useCallback(() => {
-    if (!order) {
-      console.error('Order data is missing');
-      return;
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose, orderID }) => {
+
+  const [order, setOrder] = useState<any>(null);
+  const { getToken } = useAuth();
+
+
+  useEffect(() => {
+    if (orderID) {
+      const fetchOrder = async () => {
+        const token = await getToken();
+        try {
+          const order = await OrderApi.getOrderDetail(token,orderID);
+          setOrder(order.data.metadata);
+        } catch (error) {
+          console.error('Error fetching order:', error);
+        }
+      }
+      fetchOrder();
     }
+  }, [orderID, getToken]);
+
+  const handlePrint = useCallback(() => {
 
     const element = document.getElementById('order-details');
     if (!element) {
@@ -82,8 +93,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
       {order ? (
         <div className="order-details" id="order-details">
           <div className="order-header">
-            <p><strong>Order ID:</strong> #{order.orderId}</p>
+            <p><strong>Order ID:</strong> #{order._id}</p>
+            <p><strong>Order Code:</strong> {order.orderCode}</p>
             <p><strong>Customer:</strong> {order.customerName}</p>
+            <p><strong>Order Date:</strong> {order.orderDate}</p>
           </div>
           <table className="order-table">
             <thead>
@@ -92,28 +105,21 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>QTY</th>
-                <th>DISC.</th>
-                <th>TOTAL</th>
               </tr>
             </thead>
             <tbody>
-              {order.products.map((product, index) => (
+              {order.orderItems.map((product, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>${product.price.toLocaleString()}</td>
+                  <td>{product.productName}</td>
+                  <td>${product.priceAtTime.toLocaleString()}</td>
                   <td>{product.quantity}x</td>
-                  <td>{product.discount}%</td>
-                  <td>${product.total || 0}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="order-summary">
-            <p><strong>Subtotal:</strong> ${order.subtotal}</p>
-            <p><strong>Shipping:</strong> ${order.shipping}</p>
-            <p><strong>Discount:</strong> <span className="discount">-${order.discount}</span></p>
-            <p><strong>Total:</strong> <span className="total">${order.total}</span></p>
+            <p><strong>Total:</strong> <span className="total">${order.totalAmount}</span></p>
           </div>
         </div>
       ) : (

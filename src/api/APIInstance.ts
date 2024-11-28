@@ -45,12 +45,12 @@ const createApiInstance = (baseURL: string, token: string | null) => {
 export const GET = (baseURL: string, token: string | null, endpoint: string, params = null) =>
   createApiInstance(baseURL, token).get(endpoint, { params });
 
-export const POST = (baseURL: string, token: string | null, endpoint: string, data = null, params = null) =>
+export const POST = (baseURL: string, token: string | null, endpoint: string, data = {}, params = null) =>
   createApiInstance(baseURL, token).post(endpoint, data, { params });
 
-export const PUT = (baseURL: string, token: string | null, endpoint: string, id: string, data = null, params = null) =>
+export const PUT = (baseURL: string, token: string | null, endpoint: string, id: string, data = {}, params = null) =>
   createApiInstance(baseURL, token).put(id ? `${endpoint}/${id}` : endpoint, data, { params });
-export const PATCH = (baseURL: string, token: string | null, endpoint: string, id: string, data = null, params = null) =>
+export const PATCH = (baseURL: string, token: string | null, endpoint: string, id: string, data = {}, params = null) =>
   createApiInstance(baseURL, token).patch(id ? `${endpoint}/${id}` : endpoint, data, { params });
 
 export const DELETE = (baseURL: string, token: string | null, endpoint: string, id: string, params = null) =>

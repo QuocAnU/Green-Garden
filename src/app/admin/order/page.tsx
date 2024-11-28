@@ -89,31 +89,24 @@ export default function OrderManagement() {
 
     // Filter the data based on the search and filter criteria
     const filteredData = orders.filter(item => {
-        const isOrderIdMatch = item.orderCode.includes(searchText);
-        // const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
-        const isDateMatch = !dateRange || (moment(item.createdAt).isBetween(dateRange[0], dateRange[1], null, '[]'));
+        const isOrderIdMatch = item._id.includes(searchText);
+        const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
+        const isDateMatch = !dateRange || (moment(item.orderDate).isBetween(dateRange[0], dateRange[1], null, '[]'));
         const isStatusMatch = !statusFilter || item.status === statusFilter;
-        const isTotalMatch = (totalRange.length === 0 || (item.totalAmount >= totalRange[0] && item.totalAmount <= totalRange[1]));
-
-        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch && isTotalMatch;
+        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch;
     });
 
     // Define columns for the table
     const columns = [
         {
-            title: 'Order Code',
-            dataIndex: 'orderCode',
-            key: 'orderCode',
+            title: 'Order ID',
+            dataIndex: '_id',
+            key: '_id',
         },
-        // {
-        //     title: 'Customer Name',
-        //     dataIndex: 'customerName',
-        //     key: 'customerName',
-        // },
         {
-            title: 'Customer ID',
-            dataIndex: 'customerID',
-            key: 'customerID',
+            title: 'Customer Name',
+            dataIndex: 'customerName',
+            key: 'customerName',
         },
         {
             title: 'Total',
@@ -132,9 +125,9 @@ export default function OrderManagement() {
         },
 
         {
-            title: 'Created At',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            title: 'orderDate',
+            dataIndex: 'orderDate',
+            key: 'orderDate',
             render: (text: string) => moment(text).format('YYYY-MM-DD'),
         },
         {
@@ -161,7 +154,8 @@ export default function OrderManagement() {
 
     // Function to show order details in modal
     const showOrderDetails = (order: any) => {
-        setSelectedOrder(order);
+        console.log(order);
+        setSelectedOrder(order._id);
         setIsModalVisible(true);
     };
 
@@ -186,6 +180,7 @@ export default function OrderManagement() {
                 profitRange={profitRange}
                 setProfitRange={setProfitRange}
                 status={true}
+                text="Search by Order Code or Customer Name"
             />
 
             <Table columns={columns} dataSource={filteredData} />
@@ -194,7 +189,7 @@ export default function OrderManagement() {
             <OrderDetailsModal
                 visible={isModalVisible}
                 onClose={handleModalClose}
-                order={selectedOrder}
+                orderID={selectedOrder}
             />
         </div>
     );

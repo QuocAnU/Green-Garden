@@ -1,7 +1,67 @@
+'use client'
+
 import DashboardCard from "../components/DashboardCard";
 import Chart from "../components/Chart";
+import TopSellingCategory from "../components/TopSalesCard";
 import { faCartShopping, faChartLine, faChartPie, faUser  } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import OrderApi from "@/api/Order";
+import { useAuth } from "@clerk/nextjs";
+import { Table } from "antd";
+
 export default function DashboardPage() {
+  const [orders, setOrders] = useState([]);
+  const [countOrders, setCountOrders] = useState(0);
+
+  const { getToken } = useAuth();
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = await getToken();
+        const response = await OrderApi.getAll(token);
+        if (response && response.data && response.data.metadata) {
+          const sortedOrders = response.data.metadata.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          setOrders(sortedOrders.slice(0, 10));
+          setCountOrders(response.data.metadata.length);
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+    fetchOrders();
+  }, [getToken]);
+
+  const formatData = orders.map((order) => ({
+    Id: order._id,
+    customer: order.customerName,
+    status: order.status,
+    total: order.totalAmount,
+  }))
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'Id',
+      key: 'Id',
+    }, 
+    {
+      title: 'Customer',
+      dataIndex: 'customer',
+      key: 'customer',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      title: 'Total',
+      dataIndex: 'total',
+      key: 'total',
+    },
+  ]
   return (
     <div className="grid gap-6">
       <div className="grid grid-cols-4 gap-4">
@@ -17,10 +77,15 @@ export default function DashboardPage() {
         </div>
         <div className="w-1/3 bg-white p-4 rounded-lg shadow">
           <h2 className="font-semibold mb-4">Top Selling Category</h2>
-          {/* Chart or content */}
+            <TopSellingCategory />
         </div>
       </div>
       {/* Thêm các phần cho Best Selling Products và Recent Orders */}
+      <div>
+        <h2 className="font-semibold mb-4">Recent Orders</h2>
+        <Table columns={columns} dataSource={formatData} pagination={false}  />
+      </div>
+
     </div>
   );
 }

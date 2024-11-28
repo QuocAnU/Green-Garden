@@ -1,52 +1,82 @@
 "use client"; // Add this line at the top of the file
 
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, notification } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import Filters from './../components/Filters'; // Adjust the import path as necessary
 import moment from 'moment';
 import { useAuth } from '@clerk/nextjs';
 import ProductApi from '@/api/Product';
 
-// Sample data for the table
-const initialData = [
-    {
-        key: '1',
-        productId: 'P12345',
-        productName: 'Laptop',
-        quantity: 10,
-        price: 1500.00,
-        stock: 50,
-        createdAt: '2024-01-01',
-    },
-    {
-        key: '2',
-        productId: 'P67890',
-        productName: 'Smartphone',
-        quantity: 20,
-        price: 800.00,
-        stock: 30,
-        createdAt: '2024-01-05',
-    },
-    // Add more sample data as needed
-];
+import CreateProductModal from '../components/Modal/CreateProductModal';
+
+
 
 export default function ProductManagement() {
-    const [data] = useState(initialData); // Keep data constant for this example
     const [searchText, setSearchText] = useState('');
-    const [dateRange, setDateRange] = useState<any>(null);
-    const [stockRange, setStockRange] = useState<number[]>([]);
-    const [priceRange, setPriceRange] = useState<number[]>([]);
 
     const [products, setProducts] = useState([]);
     const { getToken } = useAuth();
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    // Handle modal visibility
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    // Handle creating a product (called from CreateProductModal)
+    const handleCreateProduct = async (newProduct: any) => {
+        const data = { ...newProduct };
+        data.images = newProduct.imageUrls.map((image: any) => image.imageUrl);
+        delete data.imageUrls;
+
+        const token = await getToken();
+        try {
+            const response = await ProductApi.create(token, data);
+            if (response && response.data && response.data.metadata) {
+                const newProductData = response.data.metadata;
+
+                setProducts((prevProducts) => [newProductData, ...prevProducts]);
+                notification.success({
+                    message: 'Product created successfully',
+                })
+            }
+        } catch (error) {
+            console.error('Error creating product:', error);
+        }
+
+        setIsModalVisible(false); // Close the modal
+    };
+
+
+    const handleDeleteProduct = async (productId: string) => {
+        try {
+            const token = await getToken();
+            await ProductApi.delete(token, productId);
+            setProducts(prevProducts => prevProducts.filter(product => product._id !== productId));
+            notification.success({
+                message: 'Product deleted successfully',
+            })
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
+    };
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const token = await getToken();
                 const response = await ProductApi.getAll(token);
-                console.log(response);
-                setProducts(response.data);
+                if( response && response.data && response.data.metadata) {
+                    const sortData = response.data.metadata.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    setProducts(sortData);
+                }
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
@@ -56,31 +86,31 @@ export default function ProductManagement() {
     }, [getToken]);
 
     // Filter the data based on the search and filter criteria
-    const filteredData = data.filter(item => {
-        const isProductNameMatch = item.productName.toLowerCase().includes(searchText.toLowerCase());
-        const isDateMatch = !dateRange || (moment(item.createdAt).isBetween(dateRange[0], dateRange[1], null, '[]'));
-        const isStockMatch = (stockRange.length === 0 || (item.stock >= stockRange[0] && item.stock <= stockRange[1]));
-        const isPriceMatch = (priceRange.length === 0 || (item.price >= priceRange[0] && item.price <= priceRange[1]));
+    const filteredData = products.filter(item => {
+        const isProductNameMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
+        const isProductIdMatch = item._id.toLowerCase().includes(searchText.toLowerCase());
 
-        return isProductNameMatch && isDateMatch && isStockMatch && isPriceMatch;
+        return isProductNameMatch || isProductIdMatch;
     });
 
     // Define columns for the table
     const columns = [
         {
             title: 'Product ID',
-            dataIndex: 'productId',
-            key: 'productId',
+            dataIndex: '_id',
+            key: '_id',
         },
         {
             title: 'Product Name',
-            dataIndex: 'productName',
-            key: 'productName',
+            dataIndex: 'name',
+            key: 'name',
         },
+
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
+            title: 'Description',
+            dataIndex: 'description',
+            key: 'description',
+            render  : (text: string) => text.length > 50 ? text.slice(0, 50) + '...' : text
         },
         {
             title: 'Price',
@@ -90,8 +120,8 @@ export default function ProductManagement() {
         },
         {
             title: 'Stock',
-            dataIndex: 'stock',
-            key: 'stock',
+            dataIndex: 'stockQuantity',
+            key: 'stockQuantity',
         },
         {
             title: 'Created At',
@@ -106,7 +136,7 @@ export default function ProductManagement() {
                 <div className='flex justify-center'>
                     <Button
                         icon={<DeleteOutlined />}
-                        // onClick={() => deleteProduct(record)} // You can add the delete functionality
+                        onClick={() => handleDeleteProduct(record._id)}
                         danger
                     >
                     </Button>
@@ -117,16 +147,24 @@ export default function ProductManagement() {
 
     return (
         <div>
-            <h1>Product Management</h1>
-
             {/* Filters Component */}
             <Filters
                 searchText={searchText}
                 setSearchText={setSearchText}
+                text = "Search by Product ID or Product Name"
             />
+
+            <Button className='mb-4' type="primary" onClick={showModal}>
+                Create Product
+            </Button>
 
             <Table columns={columns} dataSource={filteredData} />
 
+             <CreateProductModal
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                onCreate={handleCreateProduct}
+            />
         </div>
     );
 }
