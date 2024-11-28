@@ -19,6 +19,7 @@ interface FiltersProps {
     total: boolean;
     date: boolean;
     status: boolean;
+    text: string;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -35,14 +36,15 @@ const Filters: React.FC<FiltersProps> = ({
     profit,
     total,
     date,
-    status
+    status,
+    text,
 }) => {
     return (
         <div style={{ marginBottom: 16 }}>
             <div className='flex flex-row justify-between'>
                 {/* Search Input */}
                 <Input
-                    placeholder="Search by Order ID or Customer Name"
+                    placeholder={text}
                     value={searchText}
                     onChange={e => setSearchText(e.target.value)}
                     style={{ width: 300, marginBottom: 16 }}
@@ -60,7 +62,7 @@ const Filters: React.FC<FiltersProps> = ({
 
                 {/* Status Filter */}
                 { 
-                    status &&
+                    status && 
                     <Select
                         placeholder="Filter by Status"
                         value={statusFilter}

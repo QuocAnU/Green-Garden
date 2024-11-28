@@ -1,60 +1,80 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Table, Button } from 'antd';
-import Filters from './../components/Filters'; // Adjust the import path as necessary 
-import moment from 'moment';
-// Sample data for the table
-const initialData = [
-    {
-        key: '1',
-        customerId: 'C12345',
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '123-456-7890',
-        address: '123 Main St, Springfield',
-        ordersCount: 5,
-        totalSpent: 5000.00,
-        registeredAt: '2023-01-01',
-    },
-    {
-        key: '2',
-        customerId: 'C67890',
-        name: 'Jane Smith',
-        email: 'jane.smith@example.com',
-        phone: '987-654-3210',
-        address: '456 Elm St, Metropolis',
-        ordersCount: 2,
-        totalSpent: 1200.00,
-        registeredAt: '2023-03-15',
-    },
-    // Add more sample data as needed
-];
+import React, { useState, useEffect } from 'react';
+import { Table, Button, message } from 'antd';
+import Filters from './../components/Filters'; // Adjust the import path as necessary
+import { useAuth } from '@clerk/nextjs';
+import UserApi from '@/api/User';
 
 export default function CustomerManagement() {
-    const [data] = useState(initialData);
     const [searchText, setSearchText] = useState('');
+    const [users, setUsers] = useState([]);
+    const { getToken } = useAuth();
 
-    // Filter the data based on the search and filter criteria
-    const filteredData = data.filter(item => {
-        const isIdMatch = item.customerId.includes(searchText);
-        const isNameMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
-      
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = await getToken();
+                const response = await UserApi.getAll(token);
+                if (response && response.data && response.data.metadata) {
+                    setUsers(response.data.metadata.data);
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+        fetchUsers();
+    }, [getToken]);
 
-        return (isIdMatch || isNameMatch);
+    const toggleBanStatus = async (userId: string, currentStatus: boolean) => {
+        try {
+            const token = await getToken();
+
+            const response = currentStatus ? await UserApi.unBanUser(token, userId) : await UserApi.banUser(token, userId);
+            if (response && response.status === 200) {
+                message.success(`User ${!currentStatus ? 'banned' : 'unbanned'} successfully.`);
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.id === userId ? { ...user, banned: !currentStatus } : user
+                    )
+                );
+            }
+        } catch (error) {
+            console.error('Error updating ban status:', error);
+            message.error('Failed to update ban status.');
+        }
+    };
+
+
+    const formatData = users.map((user: any) => ({
+        email: user.emailAddresses[0].emailAddress,
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        banned: user.banned,
+    }));
+
+    const filteredData = formatData.filter((user: any) => {
+        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
+        const email = user.email.toLowerCase();
+        return name.includes(searchText.toLowerCase()) || email.includes(searchText.toLowerCase()) || statusMatch;
     });
 
-    // Define columns for the table
     const columns = [
         {
             title: 'Customer ID',
-            dataIndex: 'customerId',
-            key: 'customerId',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'First Name',
+            dataIndex: 'firstName',
+            key: 'firstName',
+        },
+        {
+            title: 'Last Name',
+            dataIndex: 'lastName',
+            key: 'lastName',
         },
         {
             title: 'Email',
@@ -62,40 +82,29 @@ export default function CustomerManagement() {
             key: 'email',
         },
         {
-            title: 'Phone',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
-        {
-            title: 'Orders Count',
-            dataIndex: 'ordersCount',
-            key: 'ordersCount',
-        },
-        {
-            title: 'Total Spent',
-            dataIndex: 'totalSpent',
-            key: 'totalSpent',
-            render: (text: number) => `$${text.toFixed(2)}`,
-        },
-        {
-            title: 'Registered At',
-            dataIndex: 'registeredAt',
-            key: 'registeredAt',
-            render: (text: string) => moment(text).format('YYYY-MM-DD'),
+            title: 'Ban',
+            dataIndex: 'banned',
+            key: 'banned',
+            render: (text: boolean, record: any) => (
+                <Button
+                    type = 'primary'
+                    danger = {text}
+                    onClick={() => toggleBanStatus(record.id, text)}
+                >
+                    {text ? 'Unban' : 'Ban'}
+                </Button>
+            ),
         },
     ];
 
     return (
         <div>
-            <h1>Customer Management</h1>
-
-            {/* Filters Component */}
             <Filters
                 searchText={searchText}
-                setSearchText={setSearchText}        
+                setSearchText={setSearchText}
+                text="Search by Name or Email"
             />
-
-            <Table columns={columns} dataSource={filteredData} />
+            <Table columns={columns} dataSource={filteredData} rowKey="id" />
         </div>
     );
 }

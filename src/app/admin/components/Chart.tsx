@@ -7,7 +7,7 @@ import { Select } from "antd";
 const { Option } = Select;
 
 const data = {
-  2020: [
+  2023: [
     { name: "Jan", uv: 4000 },
     { name: "Feb", uv: 3000 },
     { name: "Mar", uv: 2000 },
@@ -21,7 +21,7 @@ const data = {
     { name: "Nov", uv: 3000 },
     { name: "Dec", uv: 4000 },
   ],
-  2021: [
+  2022: [
     { name: "Jan", uv: 5000 },
     { name: "Feb", uv: 4200 },
     { name: "Mar", uv: 3800 },
@@ -35,7 +35,7 @@ const data = {
     { name: "Nov", uv: 4600 },
     { name: "Dec", uv: 5000 },
   ],
-  2022: [
+  2021: [
     { name: "Jan", uv: 4200 },
     { name: "Feb", uv: 3200 },
     { name: "Mar", uv: 2700 },
@@ -52,7 +52,7 @@ const data = {
 };
 
 export default function Chart() {
-  const [selectedYear, setSelectedYear] = useState(2020); // Default year is 2020
+  const [selectedYear, setSelectedYear] = useState(2023); // Default year is 2020
 
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
@@ -63,9 +63,9 @@ export default function Chart() {
       {/* Year Selector */}
       <div className="mb-4">
         <Select value={selectedYear} onChange={handleYearChange} style={{ width: 120 }}>
-          <Option value={2020}>2020</Option>
-          <Option value={2021}>2021</Option>
+          <Option value={2023}>2023</Option>
           <Option value={2022}>2022</Option>
+          <Option value={2021}>2021</Option>
         </Select>
       </div>
 
