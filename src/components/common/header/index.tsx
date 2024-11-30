@@ -40,12 +40,20 @@ export const Header = () => {
             Chào mừng bạn đến với Green Garden !
           </div>
           <div className="flex h-8 justify-center items-center gap-14">
-            <button className="w-6 h-6">
-              <Image src={Cart} alt="" />
+            <button className="w-6 h-6 cursor-pointer">
+              <Link
+                href="/checkout"
+                className="text-[16px] font-[400] text-[#FFF]"
+              >
+                <Image src={Cart} alt="" />
+              </Link>
             </button>
-            <button className="w-6 h-6">
-              <Link href="/login" className='text-[16px] font-[400] text-[#FFF]'>
-                  <Image src={Avatar} alt="" />
+            <button className="w-6 h-6 cursor-pointer">
+              <Link
+                href="/sign-in"
+                className="text-[16px] font-[400] text-[#FFF]"
+              >
+                <Image src={Avatar} alt="" />
               </Link>
             </button>
           </div>
