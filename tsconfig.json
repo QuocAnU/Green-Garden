@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -18,17 +22,26 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"] ,
-      "@/icons/*": ["./public/assets/icons/*"],
-      "@/images/*": ["./public/assets/images/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@/icons/*": [
+        "./public/assets/icons/*"
+      ],
+      "@/images/*": [
+        "./public/assets/images/*"
+      ]
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/types/**/*.d.ts"  // Add this line to include your custom type declarations
+    "src/types/**/*.d.ts" // Add this line to include your custom type declarations
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

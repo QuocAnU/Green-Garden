@@ -26,11 +26,11 @@ export const Footer = () => {
                         <div className='flex flex-col gap-[16px]'>
                             <div className='text-[16px] font-[700] text-[#FFF]'>Legal</div>
                             <div className='flex flex-col gap-[8px]'>
-                                <Link href="/" className='text-[16px] font-[400] text-[#FFF]'>T&C</Link>
-                                <Link href="/" className='text-[16px] font-[400] text-[#FFF]'>Privacy Policy</Link>
-                                <Link href="/" className='text-[16px] font-[400] text-[#FFF]'>Returns</Link>
-                                <Link href="/" className='text-[16px] font-[400] text-[#FFF]'>Shipping</Link>
-                                <Link href="/" className='text-[16px] font-[400] text-[#FFF]'>Cancellation</Link>
+                                <Link href="/policy" className='text-[16px] font-[400] text-[#FFF]'>T&C</Link>
+                                <Link href="/policy" className='text-[16px] font-[400] text-[#FFF]'>Privacy Policy</Link>
+                                <Link href="/policy" className='text-[16px] font-[400] text-[#FFF]'>Returns</Link>
+                                <Link href="/policy" className='text-[16px] font-[400] text-[#FFF]'>Shipping</Link>
+                                <Link href="/policy" className='text-[16px] font-[400] text-[#FFF]'>Cancellation</Link>
                             </div>
                         </div>
                         <div className='flex flex-col gap-[16px]'>

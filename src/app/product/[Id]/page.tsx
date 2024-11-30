@@ -1,38 +1,41 @@
-// ProductDetail.tsx
-
 "use client";
 
-import React, { useState, memo, useCallback } from "react";
+import React, { useState, useEffect, memo, useCallback } from "react";
 import { Button, InputNumber, message } from "antd";
 import { ShoppingCartOutlined, HeartOutlined } from "@ant-design/icons";
 import SimilarProducts from "./components/SimilarProduct";
 import DeliveryInfo from "./components/DeliveryInfo";
-import ProductReviewForm from "./components/ProductReviewForm";
+import ProductApi from "@/api/Product";
+import { useParams } from "next/navigation";
+import ProductReviews from "./components/ProductReviews";
+import { useRouter } from "next/navigation";
 
 // Types
 interface ProductImage {
-  src: string;
-  alt: string;
+  url: string;
+  alt?: string;
 }
 
-interface ProductDimensions {
-  pot: string;
-  height: string;
-}
-
-interface ProductDetail {
-  id: string;
-  name: string;
-  price: number;
-  status: string;
-  description: string;
-  scientificName: string;
-  otherNames: string;
-  careLevel: string;
-  lightRequirement: string;
-  wateringNeeds: string;
-  dimensions: ProductDimensions;
-  images: ProductImage[];
+export interface ProductDetailProps {
+  _id: string;
+  name: string | "";
+  price: number | 0;
+  stockQuantity: number | 0;
+  description: string | "";
+  images: string[] | [];
+  averageRating: number | 0;
+  type: string | "";
+  tags: string[] | [];
+  reviews: string[] | [];
+  difficultyLevel: string | "";
+  otherNames: string[] | [];
+  scientificName: string | "";
+  lightRequirement: string | "";
+  waterRequirement: string | "";
+  plantSize: string | "";
+  length: number | 0;
+  height: number | 0;
+  relatedProducts: string[] | [];
 }
 
 interface DetailRowProps {
@@ -42,7 +45,7 @@ interface DetailRowProps {
 
 interface ProductImageProps {
   src: string;
-  alt: string;
+  alt?: string;
   onClick?: () => void;
   isSelected?: boolean;
   priority?: boolean;
@@ -85,65 +88,65 @@ const ProductImage = memo(
     >
       <img
         src={src}
-        alt={alt}
-        className="absolute top-0 left-0 w-full h-full object-fill"
+        alt={alt || "Product Image"}
+        className="absolute top-0 left-0 w-full h-full object-cover"
       />
     </div>
   )
 );
 ProductImage.displayName = "ProductImage";
 
-const ProductDetailView: React.FC = () => {
+const ProductDetailPropsView: React.FC = () => {
+  const [product, setProduct] = useState<ProductDetailProps | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const params = useParams();
+  const router = useRouter();
 
-  const product: ProductDetail = {
-    id: "SGHE020",
-    name: "Cây ngũ gia bì cẩm thạch nhỏ chậu ương",
-    price: 800000,
-    status: "còn hàng",
-    description:
-      "Cây Bàng Singapore LỚn có thể dễ dàng nhận ra ở những góc quán cafe, làm văn phòng. Với những chiếc lá cứng bóng bẩy đậm vẻ lâu năm, nhưng gần là hình chân chim nổi bật.",
-    scientificName: "Ficus lyrata",
-    otherNames: "Bàng Singapore / Sung lý bá",
-    careLevel: "Dễ chăm sóc",
-    lightRequirement: "Nắng trực tiếp / Ánh sáng tán xạ",
-    wateringNeeds: "Tưới nước 2 - 3 lần/tuần",
-    dimensions: {
-      pot: "Kích thước chậu: 12×12 cm (DxC)",
-      height: "Chiều cao tổng: 25 - 30 cm",
-    },
-    images: [
-      {
-        src: "https://media.istockphoto.com/id/680614076/vi/anh/c%C3%A2y-c%C3%B4-l%E1%BA%ADp.jpg?s=1024x1024&w=is&k=20&c=RzxgGqv-MTDOBg8uHEZbW_zJQ1C5lfi-6CJnHg9NarU=",
-        alt: "Cây ngũ gia bì - Hình ảnh chính",
-      },
-      {
-        src: "https://media.istockphoto.com/id/1451659440/vi/anh/c%C3%A2y-%C4%91%C6%B0%E1%BB%A3c-c%C3%B4-l%E1%BA%ADp-tr%C3%AAn-n%E1%BB%81n-tr%E1%BA%AFng-ph%C3%B9-h%E1%BB%A3p-cho-c%E1%BA%A3-in-%E1%BA%A5n-v%C3%A0-trang-web.jpg?s=2048x2048&w=is&k=20&c=es4nc5gqmO2X_xxoJrT3RBQafrWvaeJebp69puvh01w=",
-        alt: "Cây ngũ gia bì - Chi tiết lá",
-      },
-      {
-        src: "https://media.istockphoto.com/id/1334783309/vi/anh/c%C3%A2y-xanh-bi%E1%BB%87t-l%E1%BA%ADp-tr%C3%AAn-n%E1%BB%81n-tr%E1%BA%AFng.jpg?s=2048x2048&w=is&k=20&c=VKyfbs9dHfixaKoenRcj0m0a4NgR1kiXEMPU8m9XCqo=",
-        alt: "Cây ngũ gia bì - Toàn cảnh",
-      },
-      {
-        src: "https://media.istockphoto.com/id/1152424659/vi/anh/c%C3%A2y-l%E1%BB%9Bn-b%E1%BB%8B-c%C3%B4-l%E1%BA%ADp-tr%C3%AAn-n%E1%BB%81n-tr%E1%BA%AFng.jpg?s=1024x1024&w=is&k=20&c=MX9qoICM1azWPaPjelbKsa1EqBXTNvZCSFdVlIcNLkA=",
-        alt: "Cây ngũ gia bì - Chi tiết thân",
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchProductDetailProps = async () => {
+      try {
+        setIsLoading(true);
+        const response = await ProductApi.getById(null, params?.Id as string);
+        const productData = response?.data?.metadata;
+        setProduct(productData);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        message.error("Không thể tải thông tin sản phẩm");
+        setIsLoading(false);
+      }
+    };
+
+    if (params?.Id) {
+      fetchProductDetailProps();
+    }
+  }, [params?.Id]);
+
+  console.log("Product", product);
 
   const handleQuantityChange = useCallback((value: number | null) => {
     setQuantity(value || 1);
   }, []);
 
   const handleAddToCart = useCallback(async () => {
+    if (!product) return;
+
     try {
       setIsAddingToCart(true);
-      // Giả lập API call
+      // Implement actual add to cart logic
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      const data = {
+        productId: product._id,
+        quantity
+      }
+      
+      console.log(JSON.stringify(data, null ,2));
 
+      router.push(`/checkout`);
+      
       message.success("Đã thêm sản phẩm vào giỏ hàng");
     } catch (error) {
       message.error("Có lỗi xảy ra, vui lòng thử lại");
@@ -151,11 +154,19 @@ const ProductDetailView: React.FC = () => {
     } finally {
       setIsAddingToCart(false);
     }
-  }, []);
+  }, [product]);
 
   const handleAddToWishlist = useCallback(() => {
     message.success("Đã thêm vào danh sách yêu thích");
   }, []);
+
+  if (isLoading) {
+    return <div className="text-center py-10">Đang tải...</div>;
+  }
+
+  if (!product) {
+    return <div className="text-center py-10">Không tìm thấy sản phẩm</div>;
+  }
 
   return (
     <main className="container mx-auto px-4 py-8 max-w-[1440px] my-2">
@@ -163,59 +174,77 @@ const ProductDetailView: React.FC = () => {
         {/* Image Section */}
         <section className="space-y-4 sticky top-4" aria-label="Product Images">
           <ProductImage
-            src={product.images[selectedImageIndex].src}
-            alt={product.images[selectedImageIndex].alt}
+            src={product?.images?.[selectedImageIndex]}
+            alt={`${product?.name} - Hình ảnh ${selectedImageIndex + 1}`}
             priority
           />
 
           <div className="grid grid-cols-4 gap-2">
-            {product.images.map((image, index) => (
-              <ProductImage
-                key={index}
-                src={image.src}
-                alt={image.alt}
-                onClick={() => setSelectedImageIndex(index)}
-                isSelected={selectedImageIndex === index}
-              />
-            ))}
+            {product?.images?.length > 0 &&
+              product?.images?.map((imageUrl, index) => (
+                <ProductImage
+                  key={index}
+                  src={imageUrl}
+                  alt={`${product?.name} - Hình ảnh ${index + 1}`}
+                  onClick={() => setSelectedImageIndex(index)}
+                  isSelected={selectedImageIndex === index}
+                />
+              ))}
           </div>
         </section>
 
         {/* Product Info Section */}
         <section className="space-y-6">
           <header>
-            <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-sm text-gray-500">Mã: {product.id}</p>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {product?.name}
+            </h1>
+            <p className="text-sm text-gray-500">Mã: {product?._id}</p>
           </header>
 
           <div className="flex items-center justify-between">
             <span className="text-3xl font-bold text-green-500">
-              {formatPrice(product.price)}
+              {formatPrice(product?.price)}
             </span>
             <span className="text-sm text-gray-500 capitalize">
-              Tình trạng: {product.status}
+              Tình trạng: {product?.stockQuantity > 0 ? "Còn hàng" : "Hết hàng"}
             </span>
           </div>
 
           <div className="space-y-4">
             <p className="text-gray-700 leading-relaxed">
-              {product.description}
+              {product?.description}
             </p>
 
+            {/* You might want to add more detailed information here */}
             <div className="space-y-2 border rounded-lg p-4 bg-gray-50">
-              <DetailRow label="TÊN KHOA HỌC" value={product.scientificName} />
-              <DetailRow label="TÊN GỌI KHÁC" value={product.otherNames} />
-              <DetailRow label="ĐỘ KHÓ" value={product.careLevel} />
               <DetailRow
-                label="YÊU CẦU ÁNH SÁNG"
-                value={product.lightRequirement}
+                label="Tên khoa học"
+                value={product?.scientificName || ""}
               />
-              <DetailRow label="NHU CẦU NƯỚC" value={product.wateringNeeds} />
               <DetailRow
-                label="KÍCH THƯỚC CÂY"
-                value={product.dimensions.pot}
+                label="Tên gọi khác"
+                value={product?.otherNames?.join(", ") || ""}
               />
-              <DetailRow label="" value={product.dimensions.height} />
+              <DetailRow label="Độ khó" value={product?.difficultyLevel} />
+              <DetailRow
+                label="Yêu cầu ánh sáng"
+                value={product?.lightRequirement || ""}
+              />
+              <DetailRow
+                label="Nhu cầu nước"
+                value={product?.waterRequirement}
+              />
+              <DetailRow
+                label="Kích thước cây"
+                value={`${product?.plantSize || ""} (${product?.height} x ${
+                  product?.length
+                })`}
+              />
+              <DetailRow
+                label="Số lượng cây"
+                value={`${product?.stockQuantity || 0}`}
+              />
             </div>
           </div>
 
@@ -227,7 +256,7 @@ const ProductDetailView: React.FC = () => {
               <InputNumber
                 id="quantity"
                 min={1}
-                max={99}
+                max={product?.stockQuantity}
                 value={quantity}
                 onChange={handleQuantityChange}
                 aria-label="Số lượng sản phẩm"
@@ -242,6 +271,7 @@ const ProductDetailView: React.FC = () => {
                 icon={<ShoppingCartOutlined />}
                 onClick={handleAddToCart}
                 loading={isAddingToCart}
+                disabled={product?.stockQuantity === 0}
                 className="bg-green-500 hover:bg-green-600 min-w-[200px]"
               >
                 {isAddingToCart ? "Đang thêm..." : "Thêm vào giỏ hàng"}
@@ -260,10 +290,10 @@ const ProductDetailView: React.FC = () => {
           <DeliveryInfo />
         </section>
       </div>
-      <ProductReviewForm />
-      <SimilarProducts />
+      <ProductReviews product={product} />
+      <SimilarProducts productIds={product?.relatedProducts} />
     </main>
   );
 };
 
-export default ProductDetailView;
+export default ProductDetailPropsView;
