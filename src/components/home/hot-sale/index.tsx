@@ -1,3 +1,5 @@
+'use client'
+
 import { sansitaSwash } from "@/app/layout"
 import { HOTSALELIST } from "./mock-data"
 import Image from "next/image"
