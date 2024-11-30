@@ -74,7 +74,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                     initialValue={['']}
                     rules={[
                         {
-                            validator: async(_, fields) => {
+                            validator: async (_, fields) => {
                                 if (!fields || fields.length < 1) {
                                     return Promise.reject(new Error('At least one image URL is required'));
                                 }
@@ -84,26 +84,26 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                 >
                     {(fields, { add, remove }) => (
                         <>
-                            {fields.map(({ key, fieldKey, name, field }) => (
-                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                    <Form.Item
-                                        {...field}
-                                        label={`Image URL ${key + 1}`}
-                                        name={[name, 'imageUrl']}
-                                        fieldKey={[fieldKey, 'imageUrl']}
-                                        rules={[{ required: true, message: 'Please enter an image URL' }]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
+                            {fields.map(({ key, name, fieldKey }) => {
+                                const validFieldKey = fieldKey ?? key; // Fallback to 'key' if 'fieldKey' is undefined
 
-                                    <Button
-                                        danger
-                                        onClick={() => remove(name)}
-                                    >
-                                        Remove
-                                    </Button>
-                                </Space>
-                            ))}
+                                return (
+                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                        <Form.Item
+                                            label={`Image URL ${key + 1}`}
+                                            name={[name, 'imageUrl']}
+                                            fieldKey={[validFieldKey, 'imageUrl']} // Use the fallback validFieldKey here
+                                            rules={[{ required: true, message: 'Please enter an image URL' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Button danger onClick={() => remove(name)}>
+                                            Remove
+                                        </Button>
+                                    </Space>
+                                );
+                            })}
 
                             <Form.Item>
                                 <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />}>
@@ -113,6 +113,8 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                         </>
                     )}
                 </Form.List>
+
+
 
 
 
