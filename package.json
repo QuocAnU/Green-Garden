@@ -31,9 +31,9 @@
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
+    "react-hook-form": "^7.53.2",
     "recharts": "^2.13.0",
-    "yup": "^1.4.0",
-    "react-hook-form": "^7.53.2"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

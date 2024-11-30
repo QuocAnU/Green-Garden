@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Card } from "antd";
+import { Badge, Card, Image } from "antd";
 import React from "react";
 import { useRouter } from "next/navigation";
 
@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => router.push(`/product/${id}`)}
       cover={
         <div style={{ position: "relative" }} className="p-5 rounded-4">
-          <img
+          <Image
             alt={title}
             src={
               imageUrl ||
