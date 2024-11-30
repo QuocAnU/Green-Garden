@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Thumbnail from '@/images/reason-thumbnail.jpg'
+import Thumbnail from '@/images/reason-thumbnail.svg'
 import { sansitaSwash } from "@/app/layout"
 export const Reason = () => {
     return (
@@ -17,9 +17,9 @@ export const Reason = () => {
                         Schedule your service appointment today!
                     </div>
                 </div>
-                <button className="flex w-[282px] h-[64px] p-2 justify-center items-center rounded-[8px] bg-[#3B823E]" style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}>
+                {/* <button className="flex w-[282px] h-[64px] p-2 justify-center items-center rounded-[8px] bg-[#3B823E]" style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}>
                     <div className="text-center text-[20px] font-[700] text-[#FFF]">Book Now!</div>
-                </button>
+                </button> */}
             </div>
             <div className="rounded-[16px] border-[1px] border-[#3B823E] h-[442px] w-[588px] flex-shrink-0" style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}>
                 <Image src={Thumbnail} className="h-full w-full rounded-[16px] object-cover" alt="" />

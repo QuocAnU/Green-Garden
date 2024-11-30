@@ -1,0 +1,18 @@
+export type Product = {
+    _id: string,
+    name: string,
+    price: number,
+    category: string,
+    description?: string,
+    stockQuantity: number,
+    images: string[],
+    scientificName?: string,
+    otherNames?: string[],
+    difficultyLevel?: string,
+    lightRequirement?: string,
+    waterRequirement?: string,
+    plantSize?: string,
+    relatedProducts?: string[],
+    type: string,
+    tags?: string[],
+}

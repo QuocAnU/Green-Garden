@@ -1,38 +1,18 @@
-"use client";
-
-import ArrowRight from "@/icons/arrow-right.svg";
+// import ArrowRight from "@/icons/arrow-right.svg";
 import Image from "next/image";
 import { ALLPLANTLIST } from "./mock-data";
-// import { useEffect, useState } from "react";
-// import ProductApi from "@/api/Product";
 
-export const AllPlant = () => {
-  // const [products, setProducts] = useState([]);
-
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const response = await ProductApi.getAll(null);
-  //       console.log("All plan api", response?.data);
-  //       setProducts(response?.data?.metadata);
-  //     } catch (error) {
-  //       console.error("Error fetching products:", error);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, []);
-
+export const AllType = () => {
   return (
     <div className="flex flex-col items- justify-center gap-5">
-      <div className="flex items-center justify-end">
+      {/* <div className="flex items-center justify-end">
         <button className="flex items-center justify-center gap-2">
           <div className="text-center text-[16px] font-[400] text-[#3B823E] underline">
             Xem thêm
           </div>
           <Image src={ArrowRight} alt="" />
         </button>
-      </div>
+      </div> */}
       <div className="flex justify-center items-center gap-6">
         {ALLPLANTLIST.map((item, idx) => (
           <div
