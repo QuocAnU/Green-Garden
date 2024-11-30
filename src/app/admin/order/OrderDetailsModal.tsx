@@ -1,69 +1,60 @@
 "use client";
 
-import React, { useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'antd';
-import dynamic from 'next/dynamic';
+import OrderApi from '@/api/Order';
 import './OrderDetailsModal.css';
 
-// Import html2pdf.js dynamically with the correct type
-const html2pdf = dynamic(() => import('html2pdf.js'), { ssr: false }) as unknown as (element: HTMLElement, options?: Html2PdfOptions) => void;
+import { useAuth } from '@clerk/nextjs';
 
-interface Product {
-  name: string;
+
+interface orderItems {
+  productName: string;
+  priceAtTime: number;
   quantity: number;
-  price: number;
-  discount: number;
-  total: number;
+
+}
+interface OrderDetails {
+  _id: string;
+  customerName: string;
+  orderCode: string;
+  orderDate: string;
+  email: string;
+  phone: string;
+  address: string;
+  totalAmount: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  orderItems: orderItems[]
 }
 
 interface OrderDetailsModalProps {
   visible: boolean;
   onClose: () => void;
-  order: {
-    orderId: string;
-    customerName: string;
-    products: Product[];
-    subtotal: number;
-    shipping: number;
-    discount: number;
-    total: number;
-  } | null;
+  orderID: string;
 }
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose, order }) => {
-  const handlePrint = useCallback(() => {
-    if (!order) {
-      console.error('Order data is missing');
-      return;
-    }
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose, orderID }) => {
 
-    const element = document.getElementById('order-details');
-    if (!element) {
-      console.error('Order details element not found');
-      return;
-    }
+  const [order, setOrder] = useState<OrderDetails>();
+  const { getToken } = useAuth();
 
-    if (html2pdf) {
-      try {
-        // Generate PDF with html2pdf
-        html2pdf(element, {
-          margin: 10,
-          filename: 'order-details.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
-        }).then(() => {
-          console.log('PDF generated successfully');
-        }).catch((err: Error) => {
-          console.error('Error generating PDF:', err.message);
-        });
-      } catch (error) {
-        console.error('Unexpected error during PDF generation:', error);
+
+  useEffect(() => {
+    if (orderID) {
+      const fetchOrder = async () => {
+        const token = await getToken();
+        try {
+          const order = await OrderApi.getOrderDetail(token,orderID);
+          setOrder(order.data.metadata);
+        } catch (error) {
+          console.error('Error fetching order:', error);
+        }
       }
-    } else {
-      console.error('html2pdf.js is not loaded');
+      fetchOrder();
     }
-  }, [order]);
+  }, [orderID, getToken]);
 
   return (
     <Modal
@@ -71,9 +62,6 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
       visible={visible}
       onCancel={onClose}
       footer={[
-        <Button key="print" onClick={handlePrint} disabled={!order}>
-          Download PDF
-        </Button>,
         <Button key="close" onClick={onClose}>
           Close
         </Button>,
@@ -82,8 +70,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
       {order ? (
         <div className="order-details" id="order-details">
           <div className="order-header">
-            <p><strong>Order ID:</strong> #{order.orderId}</p>
+            <p><strong>Order ID:</strong> #{order._id}</p>
+            <p><strong>Order Code:</strong> {order.orderCode}</p>
             <p><strong>Customer:</strong> {order.customerName}</p>
+            <p><strong>Order Date:</strong> {order.orderDate}</p>
           </div>
           <table className="order-table">
             <thead>
@@ -92,28 +82,21 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>QTY</th>
-                <th>DISC.</th>
-                <th>TOTAL</th>
               </tr>
             </thead>
             <tbody>
-              {order.products.map((product, index) => (
+              {order.orderItems.map((product : orderItems, index: number) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
-                  <td>{product.name}</td>
-                  <td>${product.price.toLocaleString()}</td>
+                  <td>{product.productName}</td>
+                  <td>${product.priceAtTime.toLocaleString()}</td>
                   <td>{product.quantity}x</td>
-                  <td>{product.discount}%</td>
-                  <td>${product.total || 0}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="order-summary">
-            <p><strong>Subtotal:</strong> ${order.subtotal}</p>
-            <p><strong>Shipping:</strong> ${order.shipping}</p>
-            <p><strong>Discount:</strong> <span className="discount">-${order.discount}</span></p>
-            <p><strong>Total:</strong> <span className="total">${order.total}</span></p>
+            <p><strong>Total:</strong> <span className="total">${order.totalAmount}</span></p>
           </div>
         </div>
       ) : (

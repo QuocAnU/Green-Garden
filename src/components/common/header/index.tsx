@@ -4,7 +4,7 @@ import Image from "next/image";
 import Cart from "@/icons/shopping-cart.svg";
 import Avatar from "@/icons/account_circle.svg";
 import ArrowDown from "@/icons/arrow-down.svg";
-import Logo from "@/images/Logo-header.svg";
+import Logo from "@/images/logo-footer.svg";
 import Search from "@/icons/search.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

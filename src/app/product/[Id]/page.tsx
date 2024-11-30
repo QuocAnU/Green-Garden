@@ -69,7 +69,7 @@ const DetailRow = memo(({ label, value }: DetailRowProps) => (
 DetailRow.displayName = "DetailRow";
 
 const ProductImage = memo(
-  ({ src, alt, onClick, isSelected, priority = false }: ProductImageProps) => (
+  ({ src, alt, onClick, isSelected  }: ProductImageProps) => (
     <div
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -150,6 +150,7 @@ const ProductDetailPropsView: React.FC = () => {
       message.success("Đã thêm sản phẩm vào giỏ hàng");
     } catch (error) {
       message.error("Có lỗi xảy ra, vui lòng thử lại");
+      console.error("Error:", error);
     } finally {
       setIsAddingToCart(false);
     }

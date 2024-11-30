@@ -4,7 +4,7 @@ import Certificate from '@/images/certificate.svg'
 import Link from 'next/link'
 import Facebook from '@/icons/Facebook.svg'
 import Twitter from '@/icons/Twitter.svg'
-import Instagram from '@/icons/instagram.svg'
+import Instagram from '@/icons/Instagram.svg'
 import Visa from '@/icons/visa.svg'
 import MasterCard from '@/icons/mastercard.svg'
 export const Footer = () => {

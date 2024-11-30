@@ -1,4 +1,13 @@
-import { GET, POST, DELETE, PATCH, PUT } from "../APIInstance";
+import { GET, POST, DELETE, PUT } from "../APIInstance";
+
+interface Product {
+    name: string;
+    description: string;
+    price: number;
+    stockQuantity: number;
+    category: string;
+    images: string[];
+}
 
 const URL = "https://api-tmdt.onrender.com/api/v1/products/user/product";
 const ProductApi = {

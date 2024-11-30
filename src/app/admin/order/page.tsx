@@ -8,10 +8,24 @@ import OrderDetailsModal from './OrderDetailsModal'; // Import the new modal com
 import moment from 'moment';
 import { useAuth } from '@clerk/nextjs';
 import OrderApi from '@/api/Order';
+import { Product } from '../product/page';
+export interface Order {
+    _id: string;
+    key: string;
+    customerName: string;
+    email: string;
+    phone: string;
+    address: string;
+    totalAmount: number;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+    products: Product[];
+}
 
 const { Option } = Select;
 
-const StatusCell = ({ status, record, onStatusChange }: any) => {
+const StatusCell = ({ status, record, onStatusChange }: { status: string; record: Order; onStatusChange: (newStatus: string, key: string) => void; }) => {
     const [editing, setEditing] = useState(false);
 
     const handleChange = (newStatus: string) => {
@@ -50,16 +64,16 @@ const StatusCell = ({ status, record, onStatusChange }: any) => {
     );
 };
 
+
 export default function OrderManagement() {
     const [searchText, setSearchText] = useState('');
-    const [dateRange, setDateRange] = useState<any>(null);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
     const [totalRange, setTotalRange] = useState<number[]>([]);
     const [profitRange, setProfitRange] = useState<number[]>([]);
-    const [selectedOrder, setSelectedOrder] = useState<any | null>(null); // State to hold the selected order
+    const [selectedOrder, setSelectedOrder] = useState<string>(''); // State to hold the selected order
     const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
 
-    const [orders, setOrders] = useState([]);
+    const [orders, setOrders] = useState<Order[]>([]);
 
     const { getToken } = useAuth();
 
@@ -89,31 +103,23 @@ export default function OrderManagement() {
 
     // Filter the data based on the search and filter criteria
     const filteredData = orders.filter(item => {
-        const isOrderIdMatch = item.orderCode.includes(searchText);
-        // const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
-        const isDateMatch = !dateRange || (moment(item.createdAt).isBetween(dateRange[0], dateRange[1], null, '[]'));
+        const isOrderIdMatch = item._id.includes(searchText);
+        const isNameMatch = item.customerName.toLowerCase().includes(searchText.toLowerCase());
         const isStatusMatch = !statusFilter || item.status === statusFilter;
-        const isTotalMatch = (totalRange.length === 0 || (item.totalAmount >= totalRange[0] && item.totalAmount <= totalRange[1]));
-
-        return (isOrderIdMatch || isNameMatch) && isDateMatch && isStatusMatch && isTotalMatch;
+        return (isOrderIdMatch || isNameMatch)  && isStatusMatch;
     });
 
     // Define columns for the table
     const columns = [
         {
-            title: 'Order Code',
-            dataIndex: 'orderCode',
-            key: 'orderCode',
+            title: 'Order ID',
+            dataIndex: '_id',
+            key: '_id',
         },
-        // {
-        //     title: 'Customer Name',
-        //     dataIndex: 'customerName',
-        //     key: 'customerName',
-        // },
         {
-            title: 'Customer ID',
-            dataIndex: 'customerID',
-            key: 'customerID',
+            title: 'Customer Name',
+            dataIndex: 'customerName',
+            key: 'customerName',
         },
         {
             title: 'Total',
@@ -126,21 +132,21 @@ export default function OrderManagement() {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            render: (status: string, record: any) => (
+            render: (status: string, record: Order) => (
                 <StatusCell status={status} record={record} onStatusChange={handleStatusChange} />
             ),
         },
 
         {
-            title: 'Created At',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            title: 'orderDate',
+            dataIndex: 'orderDate',
+            key: 'orderDate',
             render: (text: string) => moment(text).format('YYYY-MM-DD'),
         },
         {
         title: 'Action',
         key: 'action',
-        render: (_, record) => (
+        render: (_: unknown, record: Order) => (
             <div className='flex justify-center'>
                 <Button
                     icon={<EyeOutlined />}
@@ -160,15 +166,16 @@ export default function OrderManagement() {
     ];
 
     // Function to show order details in modal
-    const showOrderDetails = (order: any) => {
-        setSelectedOrder(order);
+    const showOrderDetails = (order: Order) => {
+        console.log(order);
+        setSelectedOrder(order._id);
         setIsModalVisible(true);
     };
 
     // Handle modal close
     const handleModalClose = () => {
         setIsModalVisible(false);
-        setSelectedOrder(null);
+        setSelectedOrder("");
     };
 
     return (
@@ -177,8 +184,6 @@ export default function OrderManagement() {
             <Filters
                 searchText={searchText}
                 setSearchText={setSearchText}
-                dateRange={dateRange}
-                setDateRange={setDateRange}
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
                 totalRange={totalRange}
@@ -186,6 +191,7 @@ export default function OrderManagement() {
                 profitRange={profitRange}
                 setProfitRange={setProfitRange}
                 status={true}
+                text="Search by Order Code or Customer Name"
             />
 
             <Table columns={columns} dataSource={filteredData} />
@@ -194,7 +200,7 @@ export default function OrderManagement() {
             <OrderDetailsModal
                 visible={isModalVisible}
                 onClose={handleModalClose}
-                order={selectedOrder}
+                orderID={selectedOrder}
             />
         </div>
     );

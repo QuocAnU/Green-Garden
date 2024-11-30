@@ -1,14 +1,11 @@
 import React from 'react';
-import { Input, DatePicker, Select } from 'antd';
+import { Input, Select } from 'antd';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 interface FiltersProps {
     searchText: string;
     setSearchText: (text: string) => void;
-    dateRange: any;
-    setDateRange: (dates: any) => void;
     statusFilter: string | undefined;
     setStatusFilter: (status: string | undefined) => void;
     totalRange: number[];
@@ -17,15 +14,13 @@ interface FiltersProps {
     setProfitRange: (range: number[]) => void;
     profit: boolean;
     total: boolean;
-    date: boolean;
     status: boolean;
+    text: string;
 }
 
 const Filters: React.FC<FiltersProps> = ({
     searchText,
     setSearchText,
-    dateRange,
-    setDateRange,
     statusFilter,
     setStatusFilter,
     totalRange,
@@ -34,33 +29,23 @@ const Filters: React.FC<FiltersProps> = ({
     setProfitRange,
     profit,
     total,
-    date,
-    status
+    status,
+    text,
 }) => {
     return (
         <div style={{ marginBottom: 16 }}>
             <div className='flex flex-row justify-between'>
                 {/* Search Input */}
                 <Input
-                    placeholder="Search by Order ID or Customer Name"
+                    placeholder={text}
                     value={searchText}
                     onChange={e => setSearchText(e.target.value)}
                     style={{ width: 300, marginBottom: 16 }}
                 />
 
-                {/* Date Range Picker */}
-                {
-                    date &&
-                    <RangePicker
-                        value={dateRange}
-                        onChange={dates => setDateRange(dates)}
-                        style={{ marginBottom: 16 }}
-                    />
-                }
-
                 {/* Status Filter */}
                 { 
-                    status &&
+                    status && 
                     <Select
                         placeholder="Filter by Status"
                         value={statusFilter}

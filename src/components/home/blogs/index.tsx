@@ -1,5 +1,4 @@
 import Image from "next/image"
-import { BESTSELLERLIST } from "../best-seller/mock-data"
 import { BLOGLIST } from "./mock-data"
 import { sansitaSwash } from "@/app/layout"
 export const Blogs = () => {
