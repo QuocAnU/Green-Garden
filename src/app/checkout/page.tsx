@@ -3,7 +3,7 @@
 // components/CartItem.tsx
 import { InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-
+import { formatCurrency } from "@/utils/formatCurrency";
 interface CartItem {
   id: string;
   name: string;
@@ -17,15 +17,6 @@ interface CartSummary {
   shipping: number;
   total: number;
 }
-
-// utils/formatCurrency.ts
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
 
 interface CartItemProps {
   item: CartItem;
