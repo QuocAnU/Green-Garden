@@ -68,8 +68,6 @@ const StatusCell = ({ status, record, onStatusChange }: { status: string; record
 export default function OrderManagement() {
     const [searchText, setSearchText] = useState('');
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
-    const [totalRange, setTotalRange] = useState<number[]>([]);
-    const [profitRange, setProfitRange] = useState<number[]>([]);
     const [selectedOrder, setSelectedOrder] = useState<string>(''); // State to hold the selected order
     const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
 
@@ -186,10 +184,6 @@ export default function OrderManagement() {
                 setSearchText={setSearchText}
                 statusFilter={statusFilter}
                 setStatusFilter={setStatusFilter}
-                totalRange={totalRange}
-                setTotalRange={setTotalRange}
-                profitRange={profitRange}
-                setProfitRange={setProfitRange}
                 status={true}
                 text="Search by Order Code or Customer Name"
             />
