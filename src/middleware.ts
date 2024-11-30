@@ -1,19 +1,31 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/product",
-  "/product/(.*)",
-  "/checkout",
-  "/policy",  
-  '/gioithieu',
-  '/lienhe',
-]);
- 
+// Define the protected routes
+const isProtectedRoute = createRouteMatcher(["/admin/(.*)", "/checkout"]);
 
-export default clerkMiddleware( async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect(  );
+export default clerkMiddleware(async (auth, req) => {
+  // Check if the route is protected
+  if (isProtectedRoute(req)) {
+    // Authenticate the user
+    const user = await auth.protect();
+
+    // Fetch the user's roles from the session or database
+    const roles = user?.publicMetadata?.roles || [];
+
+    // Check if the user has the .admin role for admin routes
+    if (
+      req.nextUrl.pathname.startsWith("/admin") &&
+      !roles.includes(".admin")
+    ) {
+      return new Response("Forbidden", { status: 403 });
+    }
+
+    // Redirect admin users to the admin dashboard
+    if (req.nextUrl.pathname.startsWith("/admin") && roles.includes(".admin")) {
+      const dashboardUrl = new URL("/admin/dashboard", req.url);
+      return NextResponse.redirect(dashboardUrl);
+    }
   }
 });
 
