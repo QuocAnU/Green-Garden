@@ -19,7 +19,7 @@ const ProductApi = {
     return await GET(`${URL}/${productId}`, token, "");
   },
 
-  async create(token: string | null, data: any) {
+  async create(token: string | null, data: Product) {
     return await POST(URL, token, "", data);
   },
 
@@ -27,7 +27,7 @@ const ProductApi = {
     return await DELETE(URL, token, "", id);
   },
 
-  async update(token: string | null, id: string, data: any) {
+  async update(token: string | null, id: string, data: Product) {
     return await PUT(URL, token, "", id, data);
   },
 };
