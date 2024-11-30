@@ -5,11 +5,9 @@ import { Carousel, Typography } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import ProductCard from "../../components/ProductCard";
 import ProductApi from "@/api/Product";
-import { ProductDetailProps } from "../page";
 import { CarouselRef } from "antd/es/carousel";
 
 const { Title } = Typography;
-
 interface Product {
   _id: string;
   name: string;

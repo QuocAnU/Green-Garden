@@ -1,4 +1,9 @@
-import { GET, POST, DELETE, PATCH, PUT } from "../APIInstance";
+import { GET, POST } from "../APIInstance";
+
+interface Review {
+  rating: number;
+  comment: string;
+}
 
 const URL = "https://api-tmdt.onrender.com/api/v1/user/reviews";
 
@@ -7,16 +12,8 @@ const ReviewApi = {
     return await GET(`${URL}/${productId}`, token, "");
   },
 
-  async create(token: string | null, productId: string, data: any) {
+  async create(token: string | null, productId: string, data: Review) {
     return await POST(`${URL}/${productId}`, token, "", data);
-  },
-
-  async delete(token: string | null, id: string) {
-    return await DELETE(URL, token, "", id);
-  },
-
-  async update(token: string | null, id: string, data: any) {
-    return await PUT(URL, token, "", id, data);
   },
 };
 

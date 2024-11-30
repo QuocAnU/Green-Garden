@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, memo, useCallback } from "react";
-import { Button, InputNumber, message } from "antd";
+import { Button, Image, InputNumber, message } from "antd";
 import { ShoppingCartOutlined, HeartOutlined } from "@ant-design/icons";
 import SimilarProducts from "./components/SimilarProduct";
 import DeliveryInfo from "./components/DeliveryInfo";
@@ -69,7 +69,7 @@ const DetailRow = memo(({ label, value }: DetailRowProps) => (
 DetailRow.displayName = "DetailRow";
 
 const ProductImage = memo(
-  ({ src, alt, onClick, isSelected  }: ProductImageProps) => (
+  ({ src, alt, onClick, isSelected }: ProductImageProps) => (
     <div
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -86,7 +86,7 @@ const ProductImage = memo(
         }
       }}
     >
-      <img
+      <Image
         src={src}
         alt={alt || "Product Image"}
         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -125,8 +125,6 @@ const ProductDetailPropsView: React.FC = () => {
     }
   }, [params?.Id]);
 
-  console.log("Product", product);
-
   const handleQuantityChange = useCallback((value: number | null) => {
     setQuantity(value || 1);
   }, []);
@@ -136,25 +134,19 @@ const ProductDetailPropsView: React.FC = () => {
 
     try {
       setIsAddingToCart(true);
-      // Implement actual add to cart logic
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const data = {
         productId: product._id,
-        quantity
-      }
-      
-      console.log(JSON.stringify(data, null ,2));
-
+        quantity,
+      };
+      console.log(JSON.stringify(data, null, 2));
       router.push(`/checkout`);
-      
-      message.success("Đã thêm sản phẩm vào giỏ hàng");
     } catch (error) {
-      message.error("Có lỗi xảy ra, vui lòng thử lại");
       console.error("Error:", error);
     } finally {
       setIsAddingToCart(false);
     }
-  }, [product]);
+  }, [product, quantity, router]);
 
   const handleAddToWishlist = useCallback(() => {
     message.success("Đã thêm vào danh sách yêu thích");

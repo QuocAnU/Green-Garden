@@ -2,16 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Card,
-  Form,
-  Input,
-  Rate,
-  Button,
-  message,
-  Typography,
-  Empty,
-} from "antd";
+import { Card, Form, Input, Rate, Button, Typography, Empty } from "antd";
 import { ProductDetailProps } from "../page";
 import { useParams } from "next/navigation";
 import * as Yup from "yup";
@@ -48,7 +39,7 @@ interface ProductReviewsProps {
 const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [messageApi, contextHolder] = message.useMessage();
+  const [reload, setReload] = useState(false);
   const params = useParams();
   const { getToken } = useAuth();
 
@@ -65,21 +56,18 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
     },
   });
 
-  // Simulated fetch reviews (replace with actual API call)
-  const fetchProductReviews = async () => {
-    try {
-      setLoading(true);
-      const response = await ReviewApi.getAll(null, params?.Id as string);
-      // Simulated data for now
-      setReviews([...response?.data?.metadata]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProductReviews = async () => {
+      try {
+        setLoading(true);
+        const response = await ReviewApi.getAll(null, params?.Id as string);
+        setReviews([...response?.data?.metadata]);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchProductReviews();
-  }, []);
+  }, [params, reload]);
 
   const onSubmit = async (data: ReviewSchemaType) => {
     try {
@@ -91,16 +79,13 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
       };
       try {
         const token = await getToken();
-        const response = await ReviewApi.create(
-          token,
-          params?.Id as string,
-          newReview
-        );
-        await fetchProductReviews();
-      } catch (error) {}
+        await ReviewApi.create(token, params?.Id as string, newReview);
+        setReload((prev) => !prev);
+      } catch (error) {
+        console.log(error);
+      }
 
       setReviews((prevReviews) => [newReview, ...prevReviews]);
-      // Reset form
       reset();
     } finally {
       setLoading(false);
@@ -141,7 +126,6 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ product }) => {
         </div>
       }
     >
-      {contextHolder}
       <div className="p-6 rounded-lg">
         <Title level={5} className="!mt-0 !mb-6">
           Nhận xét{" "}
