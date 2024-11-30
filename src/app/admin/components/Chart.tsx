@@ -6,7 +6,16 @@ import { Select } from "antd";
 
 const { Option } = Select;
 
-const data = {
+// Define the structure of the data for each year
+type DataItem = { name: string; uv: number };
+
+// Define the structure of the entire data object
+type Data = {
+  [year: number]: DataItem[];
+};
+
+// Your data object
+const data: Data = {
   2023: [
     { name: "Jan", uv: 4000 },
     { name: "Feb", uv: 3000 },
@@ -52,7 +61,7 @@ const data = {
 };
 
 export default function Chart() {
-  const [selectedYear, setSelectedYear] = useState(2023); // Default year is 2020
+  const [selectedYear, setSelectedYear] = useState<number>(2023); // Default year is 2023
 
   const handleYearChange = (year: number) => {
     setSelectedYear(year);
