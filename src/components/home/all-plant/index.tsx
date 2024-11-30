@@ -3,25 +3,25 @@
 import ArrowRight from "@/icons/arrow-right.svg";
 import Image from "next/image";
 import { ALLPLANTLIST } from "./mock-data";
-import { useEffect, useState } from "react";
-import ProductApi from "@/api/Product";
+// import { useEffect, useState } from "react";
+// import ProductApi from "@/api/Product";
 
 export const AllPlant = () => {
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await ProductApi.getAll(null);
-        console.log("All plan api", response?.data);
-        setProducts(response?.data?.metadata);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await ProductApi.getAll(null);
+  //       console.log("All plan api", response?.data);
+  //       setProducts(response?.data?.metadata);
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error);
+  //     }
+  //   };
 
-    fetchProducts();
-  }, []);
+  //   fetchProducts();
+  // }, []);
 
   return (
     <div className="flex flex-col items- justify-center gap-5">
