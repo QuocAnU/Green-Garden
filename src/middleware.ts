@@ -1,37 +1,40 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// Define the protected routes
 const isProtectedRoute = createRouteMatcher(["/admin/(.*)", "/checkout"]);
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // Check if the route is protected
   if (isProtectedRoute(req)) {
-    // Authenticate the user
-    const user = await auth.protect();
+    try {
+      const { sessionClaims } = await auth.protect();
 
-    // Fetch the user's roles from the session or database
-    const roles = user?.publicMetadata?.roles || [];
+      const userRoles = sessionClaims?.metadata?.roles || [];
 
-    // Check if the user has the .admin role for admin routes
-    if (
-      req.nextUrl.pathname.startsWith("/admin") &&
-      !roles.includes(".admin")
-    ) {
-      return new Response("Forbidden", { status: 403 });
-    }
+      if (isAdminRoute(req)) {
+        if (!userRoles.includes("admin")) {
+          return NextResponse.redirect(new URL("/", req.url));
+        }
 
-    // Redirect admin users to the admin dashboard
-    if (req.nextUrl.pathname.startsWith("/admin") && roles.includes(".admin")) {
-      const dashboardUrl = new URL("/admin/dashboard", req.url);
-      return NextResponse.redirect(dashboardUrl);
+        if (!req.nextUrl.pathname.startsWith("/admin")) {
+          return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+        }
+      }
+
+      return NextResponse.next();
+    } catch (error) {
+      console.error("Authentication error:", error);
+      return NextResponse.redirect(new URL("/sign-in", req.url));
     }
   }
+
+  // For non-protected routes, continue normally
+  return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
+    // Skip Next.js internals and static files
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
