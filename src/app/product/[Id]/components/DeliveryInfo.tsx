@@ -1,10 +1,12 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import MapIcon from "@/images/Group42.png";
 import CallIcon from "@/images/Group46.png";
 import ChangeIcon from "@/images/Group73.png";
 
-export default async function DeliveryInfo() {
+export default function DeliveryInfo() {
   const deliveryItems = [
     {
       icon: MapIcon,

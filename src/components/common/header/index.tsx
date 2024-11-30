@@ -44,7 +44,9 @@ export const Header = () => {
               <Image src={Cart} alt="" />
             </button>
             <button className="w-6 h-6">
-              <Image src={Avatar} alt="" />
+              <Link href="/login" className='text-[16px] font-[400] text-[#FFF]'>
+                  <Image src={Avatar} alt="" />
+              </Link>
             </button>
           </div>
         </div>
