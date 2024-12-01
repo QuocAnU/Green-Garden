@@ -17,10 +17,9 @@ export const Header = () => {
   const userRole = user?.publicMetadata?.role;
 
   const navLinkClass = (path: string) =>
-    `text-[18px] font-[600] text-center ${
-      pathname === path
-        ? "text-[#3B823E]"
-        : "text-[#343434] hover:text-[#3B823E]"
+    `text-[18px] font-[600] text-center ${pathname === path
+      ? "text-[#3B823E]"
+      : "text-[#343434] hover:text-[#3B823E]"
     }`;
 
   const toggleUserDropdown = () => {
@@ -88,19 +87,11 @@ export const Header = () => {
             </Link>
 
             <Link
-              key="caycanh"
+              key="sanpham"
               href="/product"
-              className={navLinkClass("/products")}
+              className={navLinkClass("/product")}
             >
-              Cây cảnh
-            </Link>
-
-            <Link
-              key="chaucay"
-              href="/product"
-              className={navLinkClass("/products")}
-            >
-              Chậu cây
+              Sản phẩm
             </Link>
 
             <Link

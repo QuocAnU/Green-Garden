@@ -7,6 +7,10 @@ import Email from '@/images/email.svg'
 import Social from '@/images/social.svg'
 import Hotline from '@/images/hotline.svg'
 import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+import { useAuth } from "@clerk/nextjs"
+import { useState } from "react"
+import ContactApi from "@/api/Contact"
+import { notification } from "antd"
 
 const CONTACTLIST = [
     {
@@ -33,6 +37,34 @@ const CONTACTLIST = [
 
 const Lienhe = () => {
     const position = { lat: 10.773, lng: 106.659 };
+    const { getToken } = useAuth();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
+
+    const handleCreateContact = async () => {
+        if (!name || !email || !message) {
+            notification.error({
+                message: 'Error',
+                description: 'Please fill out all fields before submitting.',
+            });
+            return; // Stop further execution if validation fails
+        }
+        const token = await getToken();
+        try {
+            const response = await ContactApi.create(token, { name, email, message });
+            if (response && response.data && response.data.metadata) {
+                notification.success({
+                    message: 'Contact created successfully',
+                });
+                setName('');
+                setEmail('');
+                setMessage('');
+            }
+        } catch (error) {
+            console.error('Error creating contact:', error);
+        }
+    }
 
     return (
         <>
@@ -69,10 +101,27 @@ const Lienhe = () => {
                     <div className="text-[24px] font-[700] leading-[51.2px] text-[#224229]">Để lại lời nhắn</div>
                     <div className="w-[30px] h-[3px] bg-[#E3B845]"></div>
                     <div className="flex flex-col items-center justify-center gap-3 w-full">
-                        <input type="text" placeholder="Tên" className="w-full focus:outline-none flex items-center py-3 px-4 h-[43px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]" />
-                        <input type="email" placeholder="Email" className="w-full focus:outline-none flex items-center py-3 px-4 h-[43px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]" />
-                        <textarea placeholder="Lời nhắn" className="w-full focus:outline-none p-4 h-[123px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]" />
-                        <button type="submit" className="flex w-[200px] py-3 px-7 justify-center items-center rounded-[6px] bg-[#214738]">
+                        <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Tên"
+                            className="w-full focus:outline-none flex items-center py-3 px-4 h-[43px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]"
+                        />
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Email"
+                            className="w-full focus:outline-none flex items-center py-3 px-4 h-[43px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]"
+                        />
+                        <textarea
+                            placeholder="Lời nhắn"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            className="w-full focus:outline-none p-4 h-[123px] rounded-[6px] border-[1px] border-[#DFE4EA] text-[16px] font-[400] leading-[24px] text-[#000] placeholder:text-[#9CA3AF]"
+                        />
+                        <button onClick={handleCreateContact} type="submit" className="flex w-[200px] py-3 px-7 justify-center items-center rounded-[6px] bg-[#214738]">
                             <div className="text-[16px] font-[500] leading-[24px] text-[#FFF]">Gửi</div>
                         </button>
                     </div>

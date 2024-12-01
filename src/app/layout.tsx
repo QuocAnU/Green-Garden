@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import "./globals.css"; 
+import "./globals.css";
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
@@ -41,7 +41,7 @@ export default function RootLayout({
             integrity="sha384-nqcTpC+Pf7TV3V93gKJ6i0Dhd4g+4EaUS5Btzf8DC3nYTCILfWqKx+yz7Gl06VeD"
             crossOrigin="anonymous"
           />
-          
+
           {/* SEO Metadata */}
           <Head>
             <meta name="description" content={metadata.description} />

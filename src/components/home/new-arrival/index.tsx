@@ -1,24 +1,23 @@
 import { sansitaSwash } from "@/app/layout"
-// import { HOTSALELIST } from "./mock-data"
 import Image from "next/image"
 import { Product } from "@/types/product"
 import Plant from '@/images/indoor-plant.jpg';
 import { useRouter } from "next/navigation";
 
-export const HotSale = ({ products }: { products: Product[] }) => {
+export const NewArrival = ({ products }: { products: Product[] }) => {
     const router = useRouter();
-    const hotProducts = products.filter(product => product.tags?.includes("Best Seller"));
+    const newProducts = products.filter(product => product.tags?.includes("New Arrival"));
     return (
         <>
-            {hotProducts.length > 0 && (
+            {newProducts.length > 0 && (
                 <div className="flex flex-col items-center gap-7 flex-shrink-0">
                     <div className="flex flex-col gap-2 items-center justify-center">
-                        <div className={`text-center text-[48px] font-[700] text-[#343434] ${sansitaSwash.className}`}>Hot sale</div>
+                        <div className={`text-center text-[48px] font-[700] text-[#343434] ${sansitaSwash.className}`}>New Arrival</div>
                         <div className="w-[200px] h-[1px] bg-[rgba(52,52,52,0.80)]"></div>
                     </div>
                     <div className="grid gap-6 justify-center items-center">
                         <div className="grid grid-cols-4 gap-6">
-                            {hotProducts.slice(0, 4).map((item, idx) => (
+                            {newProducts.slice(0, 4).map((item, idx) => (
                                 <div
                                     key={idx}
                                     className="flex p-5 flex-col items-start gap-4 rounded-[16px] bg-[#FFF]"
@@ -51,5 +50,6 @@ export const HotSale = ({ products }: { products: Product[] }) => {
             )
             }
         </>
+
     )
 }
