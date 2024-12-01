@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // CreateProductModal.tsx
 
 import React from 'react';

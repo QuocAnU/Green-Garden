@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, memo, useCallback } from "react";
-import { Button, Image, InputNumber, message } from "antd";
+import { Button, InputNumber, message } from "antd";
 import { ShoppingCartOutlined, HeartOutlined } from "@ant-design/icons";
 import SimilarProducts from "./components/SimilarProduct";
 import DeliveryInfo from "./components/DeliveryInfo";

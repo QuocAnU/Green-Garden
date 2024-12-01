@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Badge, Card, Image } from "antd";
+import { Badge, Card } from "antd";
 import React from "react";
 import { useRouter } from "next/navigation";
 

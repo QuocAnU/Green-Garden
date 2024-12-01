@@ -36,23 +36,19 @@ const ShoppingCart: React.FC = () => {
     shipping: 200000,
     total: 0,
   });
-  const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const { getToken } = useAuth();
 
   useEffect(() => {
     const fetchCartList = async () => {
       try {
-        setIsLoading(true);
         const token = await getToken();
         const response = await CartApi.getAll(token);
         setItems(response?.data?.metadata.cart.items || []);
       } catch (error) {
         console.log("ShoppingCart get api", error);
         setItems([]);
-      } finally {
-        setIsLoading(false);
-      }
+      } 
     };
     fetchCartList();
   }, [getToken, refetch]);
