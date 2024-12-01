@@ -2,7 +2,7 @@
 // CreateProductModal.tsx
 
 import React from 'react';
-import { Modal, Form, Input, InputNumber, Button, Space } from 'antd';
+import { Modal, Form, Input, InputNumber, Button, Space, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 
@@ -70,6 +70,16 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                     <Input />
                 </Form.Item>
 
+                <Form.Item
+                    label='type'
+                    name='type'
+                    rules={[{ required: true, message: 'Please select the product type' }]}
+                >
+                    <Select>
+                        <Select.Option value="Plant">Plant</Select.Option>
+                        <Select.Option value="Pot">Pot</Select.Option>
+                    </Select>
+                </Form.Item>
                 <Form.List
                     name="imageUrls"
                     initialValue={['']}

@@ -15,6 +15,7 @@ export const Header = () => {
   const pathname = usePathname();
   const { user } = useUser();
   const userRole = user?.publicMetadata?.role;
+  console.log("Check user:", user);
 
   const navLinkClass = (path: string) =>
     `text-[18px] font-[600] text-center ${pathname === path

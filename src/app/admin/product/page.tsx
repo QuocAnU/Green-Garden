@@ -63,7 +63,7 @@ export default function ProductManagement() {
         try {
             const response = await ProductApi.create(token, data);
             if (response && response.data && response.data.metadata) {
-                const newProductData = response.data.metadata[0]; // Assuming metadata is an array
+                const newProductData = response.data.metadata; // Assuming metadata is an array
 
                 setProducts((prevProducts) => [newProductData, ...prevProducts]);
                 notification.success({
