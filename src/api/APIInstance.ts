@@ -55,3 +55,10 @@ export const PATCH = (baseURL: string, token: string | null, endpoint: string, i
 
 export const DELETE = (baseURL: string, token: string | null, endpoint: string, id: string, params = null) =>
   createApiInstance(baseURL, token).delete(id ? `${endpoint}/${id}` : endpoint, { params });
+
+export const DELETE_BODY = (
+  baseURL: string,
+  token: string | null,
+  endpoint: string,
+  data: { productId: string } | null = null
+) => createApiInstance(baseURL, token).delete(endpoint, { data: data });

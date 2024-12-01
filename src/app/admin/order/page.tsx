@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client"; // Add this line at the top of the file
 
 import React, { useState, useEffect } from 'react';

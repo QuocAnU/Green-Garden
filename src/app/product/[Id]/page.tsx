@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect, memo, useCallback } from "react";
-import { Button, Image, InputNumber, message } from "antd";
+import { Button, InputNumber, message } from "antd";
 import { ShoppingCartOutlined, HeartOutlined } from "@ant-design/icons";
 import SimilarProducts from "./components/SimilarProduct";
 import DeliveryInfo from "./components/DeliveryInfo";
@@ -9,6 +10,8 @@ import ProductApi from "@/api/Product";
 import { useParams } from "next/navigation";
 import ProductReviews from "./components/ProductReviews";
 import { useRouter } from "next/navigation";
+import CartApi from "@/api/Cart";
+import { useAuth } from "@clerk/nextjs";
 
 // Types
 interface ProductImage {
@@ -86,7 +89,7 @@ const ProductImage = memo(
         }
       }}
     >
-      <Image
+      <img
         src={src}
         alt={alt || "Product Image"}
         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -104,6 +107,7 @@ const ProductDetailPropsView: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
   const router = useRouter();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     const fetchProductDetailProps = async () => {
@@ -139,14 +143,18 @@ const ProductDetailPropsView: React.FC = () => {
         productId: product._id,
         quantity,
       };
-      console.log(JSON.stringify(data, null, 2));
-      router.push(`/checkout`);
+      const token = await getToken();
+      const response = await CartApi.add(token, data);
+
+      if (response.status === 200) {
+        router.push("/checkout");
+      }
     } catch (error) {
       console.error("Error:", error);
     } finally {
       setIsAddingToCart(false);
     }
-  }, [product, quantity, router]);
+  }, [product, quantity, router, getToken]);
 
   const handleAddToWishlist = useCallback(() => {
     message.success("Đã thêm vào danh sách yêu thích");
