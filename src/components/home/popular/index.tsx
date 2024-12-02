@@ -2,7 +2,7 @@ import { sansitaSwash } from "@/app/layout"
 // import { POPULARLIST } from "./mock-data"
 import Image from "next/image"
 import { Product } from "@/types/product"
-import Plant from '@/images/indoor-plant.jpg';
+// import Plant from '@/images/indoor-plant.jpg';
 import { useRouter } from "next/navigation";
 
 export const Popular = ({ products }: { products: Product[] }) => {
@@ -22,12 +22,14 @@ export const Popular = ({ products }: { products: Product[] }) => {
                             {popularProducts.slice(0, 7).map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="flex p-5 flex-col items-start gap-4 rounded-[16px] bg-[#FFF]"
+                                    className="flex p-5 flex-col items-start gap-4 rounded-[16px] bg-[#FFF] hover:scale-105"
                                     style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}
                                 >
-                                    <div className="relative rounded-[8px] h-[158px] w-[226px] overflow-hidden">
+                                    <div className="relative rounded-[8px] h-full w-full overflow-hidden">
                                         <Image
-                                            src={Plant}
+                                            src={item.images[0]}
+                                            width={500}
+                                            height={500}
                                             className="h-full w-full rounded-[8px] object-fill"
                                             alt=""
                                         />
