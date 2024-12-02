@@ -36,15 +36,15 @@ export default function Home() {
   return (
     <>
       <Image src={Banner} className="w-full" alt="" />
-      <div className="flex flex-col items-center justify-center gap-16 px-6 py-12 bg-green-50">
+      <div className="flex flex-col items-center justify-center gap-16 px-6 py-12">
         <AllType />
         <BestSeller products={products} />
         <Popular products={products} />
-        <Blogs />
         <HotSale products={products} />
         <NewArrival products={products} />
         <Pot products={products} />
         <Plants products={products} />
+        <Blogs />
         <Reason />
       </div>
     </>

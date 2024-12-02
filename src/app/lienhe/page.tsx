@@ -72,7 +72,7 @@ const Lienhe = () => {
                 <Image src={Banner} className='w-full' alt="" />
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[100px] font-[600] text-[#FFF] w-full text-center">Liên hệ với chúng tôi</div>
             </div>
-            <div className="flex flex-col items-center justify-center gap-12 px-6 py-12 bg-green-50">
+            <div className="flex flex-col items-center justify-center gap-12 px-6 py-12">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <div className="flex flex-col justify-center items-center gap-3">
                         <div className="text-[33px] font-[700] leading-[30px] text-[#214738]">Thông tin liên hệ</div>

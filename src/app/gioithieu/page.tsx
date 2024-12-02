@@ -14,7 +14,7 @@ const Gioithieu = () => {
                 <Image src={Banner} className='w-full' alt="" />
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[100px] font-[600] text-[#FFF]">Giới thiệu</div>
             </div>
-            <div className='flex flex-col items-center justify-center bg-green-50'>
+            <div className='flex flex-col items-center justify-center'>
                 <div className="flex items-start justify-center gap-12 px-6 py-12">
                     <div className="flex flex-col items-start gap-4 max-w-[698px]">
                         <div className="flex flex-col items-start gap-3">

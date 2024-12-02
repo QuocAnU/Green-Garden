@@ -19,7 +19,7 @@ export const AllType = () => {
             key={idx}
             className="flex flex-col justify-center items-center gap-6"
           >
-            <div className="rounded-[125px] h-[200px] w-[200px]">
+            <div className="rounded-[125px] h-[200px] w-[200px] hover:scale-110">
               <Image
                 src={item.img}
                 className="h-full w-full rounded-full object-cover"
