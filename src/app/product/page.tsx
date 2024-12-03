@@ -8,6 +8,7 @@ import ProductApi from "@/api/Product";
 
 export default function ProductPage() {
   const [products, setProducts] = useState([]);
+  const [category ,setCategory] = useState<string>("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,9 +27,9 @@ export default function ProductPage() {
   return (
     <div className="max-w-[1336px] mx-auto my-2">
       <div className="bg-white w-full min-h-screen flex items-start p-4 gap-4">
-        <CategoryMenu />
+        <CategoryMenu products={products} setCategory={setCategory} />
         <div className="flex-1 px-4">
-          <ProductList products={products} />
+          <ProductList products={products} category={category} setCategory={setCategory} />
         </div>
       </div>
       <ViewedProducts products={products} />

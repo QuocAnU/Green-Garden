@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -11,57 +13,55 @@ interface CategoryItem {
   children?: CategoryItem[];
 }
 
-const categories: CategoryItem[] = [
-  {
-    key: "cay-canh",
-    label: "Cây cảnh",
-    children: [
-      { key: "1_cay-canh-de-ban", label: "Cây cảnh để bàn" },
-      { key: "1_cay-thuy-sinh", label: "Cây thủy sinh" },
-      { key: "1_terrarium", label: "Terrarium" },
-      { key: "1_cay-bonsai", label: "Cây bonsai" },
-      { key: "1_sen-da", label: "Sen đá" },
-      { key: "1_xuong-rong", label: "Xương rồng" },
-      { key: "1_cay-chau-treo", label: "Cây chậu treo" },
-      { key: "1_cay-an-trai", label: "Cây ăn trái" },
-      { key: "1_cay-canh-noi-that", label: "Cây cảnh nội thất" },
-      { key: "1_cay-canh-ngoai-that", label: "Cây cảnh ngoại thất" },
-    ],
-  },
-  {
-    key: "chau-canh",
-    label: "Chậu cảnh",
-    children: [
-      { key: "2-cay-canh-de-ban", label: "Cây cảnh để bàn" },
-      { key: "2-cay-thuy-sinh", label: "Cây thủy sinh" },
-      { key: "2-terrarium", label: "Terrarium" },
-      { key: "2-cay-bonsai", label: "Cây bonsai" },
-      { key: "2-sen-da", label: "Sen đá" },
-      { key: "2-xuong-rong", label: "Xương rồng" },
-    ],
-  },
-  {
-    key: "vat-lieu",
-    label: "Vật liệu",
-    children: [
-      { key: "3_cay-canh-de-ban", label: "Cây cảnh để bàn" },
-      { key: "3_cay-thuy-sinh", label: "Cây thủy sinh" },
-      { key: "3_terrarium", label: "Terrarium" },
-      { key: "3_cay-bonsai", label: "Cây bonsai" },
-      { key: "3_sen-da", label: "Sen đá" },
-      { key: "3_xuong-rong", label: "Xương rồng" },
-    ],
-  },
-  {
-    key: "phu-kien",
-    label: "Phụ kiện",
-    children: [],
-  },
-];
+const groupByTypeAndCategory = (data: any): CategoryItem[] => {
+  const result: CategoryItem[] = [];
 
-const CategoryMenu: React.FC = () => {
-  const [openKeys, setOpenKeys] = useState<string[]>(["cay-canh"]);
+  data?.forEach((item: any) => {
+    const typeIndex = result.findIndex((cat) => cat.label === item.type);
+    if (typeIndex === -1) {
+      result.push({
+        key: item.type,
+        label: item.type,
+        children: [
+          {
+            key: `${item.id}_${item.category.toLowerCase().replace(/\s+/g, '-')}`,
+            label: item.category,
+          },
+        ],
+      });
+    } else {
+      const categoryIndex = result[typeIndex].children?.findIndex((cat) => cat.label === item.category);
+      if (categoryIndex === -1) {
+        result[typeIndex].children?.push({
+          key: `${item.id}_${item.category.toLowerCase().replace(/\s+/g, '-')}`,
+          label: item.category,
+        });
+      }
+    }
+  });
 
+  return result;
+};
+
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  description?: string;
+  stockQuantity: number;
+  images?: string[];
+  category: string;
+}
+
+interface CategoryMenuProps {
+  products: Product[];
+  setCategory: (category: string) => void;
+}
+
+const CategoryMenu: React.FC<CategoryMenuProps> = ({ products, setCategory }) => {
+  const [openKeys, setOpenKeys] = useState<string[]>(["Cây cảnh"]);
+  const groupedCategories = groupByTypeAndCategory(products);
+  
   React.useEffect(() => {
     const styleElement = document.createElement("style");
     styleElement.innerHTML = globalStyles;
@@ -95,7 +95,7 @@ const CategoryMenu: React.FC = () => {
         openKeys={openKeys}
         onOpenChange={onOpenChange}
         className="custom-menu"
-        items={categories.map((category) => ({
+        items={groupedCategories.map((category) => ({
           key: category.key,
           label: (
             <div className="flex justify-between items-center">
@@ -107,7 +107,10 @@ const CategoryMenu: React.FC = () => {
           children: category.children?.map((subCategory) => ({
             key: subCategory.key,
             label: (
-              <span className="text-gray-800 text-sm font-semibold block">
+              <span
+                className="text-gray-800 text-sm font-semibold block"
+                onClick={() => setCategory(subCategory.label)}
+              >
                 {subCategory.label}
               </span>
             ),
