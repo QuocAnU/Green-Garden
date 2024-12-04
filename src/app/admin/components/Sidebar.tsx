@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // Import from next/navigation
 import { DashboardOutlined, AppstoreAddOutlined, UsergroupAddOutlined, UnorderedListOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { SignOutButton } from "@clerk/nextjs";
 
 export default function Sidebar() {
   const pathname = usePathname(); // Get the current path
@@ -43,9 +42,6 @@ export default function Sidebar() {
               Feedback
             </Link>
           </li>
-          <div className="text-black">
-            <SignOutButton />
-          </div>
         </ul>
       </div>
     </aside>

@@ -42,7 +42,7 @@ export default function DashboardPage() {
     Id: order._id,
     customer: order.customerName,
     status: order.status,
-    total: order.totalAmount,
+    total: order.totalPrice || order.totalAmount,
   }))
 
   const columns = [

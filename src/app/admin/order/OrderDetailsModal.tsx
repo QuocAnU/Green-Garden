@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'antd';
 import OrderApi from '@/api/Order';
+import ShipmentApi from '@/api/Shipment';
 import './OrderDetailsModal.css';
 
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 
+import { Shipment } from '@/api/Shipment';
 
 interface orderItems {
   productName: string;
@@ -23,6 +25,7 @@ interface OrderDetails {
   phone: string;
   address: string;
   totalAmount: number;
+  totalPrice: number;
   status: string;
   createdAt: string;
   updatedAt: string;
@@ -39,6 +42,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
 
   const [order, setOrder] = useState<OrderDetails>();
   const { getToken } = useAuth();
+  const {user} = useUser(); 
+  const unsafeMetadata  = user?.unsafeMetadata || {};
 
 
   useEffect(() => {
@@ -56,12 +61,44 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
     }
   }, [orderID, getToken]);
 
+  const handleOnPrint = async ()  => {
+    const token = await getToken();
+    const data: Shipment = {
+      name: typeof unsafeMetadata?.name === 'string' ? unsafeMetadata.name : order?.customerName ?? '',
+      email: typeof unsafeMetadata?.email === 'string' ? unsafeMetadata.email : order?.email ?? '',
+      phone: typeof unsafeMetadata?.phone === 'string' ? unsafeMetadata.phone : order?.phone ?? '',
+      city: typeof unsafeMetadata?.city === 'string' ? unsafeMetadata.city : '',
+      state: typeof unsafeMetadata?.state === 'string' ? unsafeMetadata.state : '',
+      country: typeof unsafeMetadata?.country === 'string' ? unsafeMetadata.country : '',
+      validated: true,
+      object_purpose: 'PURCHASE',
+      company: typeof unsafeMetadata?.company === 'string' ? unsafeMetadata.company : '',
+      street1: typeof unsafeMetadata?.street1 === 'string' ? unsafeMetadata.street1 : '',
+      street2: typeof unsafeMetadata?.street2 === 'string' ? unsafeMetadata.street2 : '',
+      zip: typeof unsafeMetadata?.zip === 'string' ? unsafeMetadata.zip : '',
+      metadata: "Home Office",
+    };
+
+    try {
+      const response = await ShipmentApi.create(token, orderID, data);
+      if(response.data) {
+        window.open(response.data.metadata.labelUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Error fetching order:', error);
+    }
+  }
+
+
   return (
     <Modal
       title={<span className='text-2xl text-center flex justify-center'>Order Details</span>}
       visible={visible}
       onCancel={onClose}
       footer={[
+        <Button key="print" onClick={handleOnPrint}>
+          Print
+        </Button>,
         <Button key="close" onClick={onClose}>
           Close
         </Button>,
@@ -96,7 +133,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
             </tbody>
           </table>
           <div className="order-summary">
-            <p><strong>Total:</strong> <span className="total">${order.totalAmount}</span></p>
+            <p><strong>Total:</strong> <span className="total">${order.totalAmount || order.totalPrice}</span></p>
           </div>
         </div>
       ) : (
