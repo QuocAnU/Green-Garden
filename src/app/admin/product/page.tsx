@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Button, notification } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Filters from './../components/Filters'; // Adjust the import path as necessary
 import moment from 'moment';
 import { useAuth } from '@clerk/nextjs';
@@ -21,7 +21,7 @@ export interface NewProduct {
     stockQuantity: number;
     category: string;
     imageUrls: ImageObj[];
-    images: string[];
+    images: string | string[];
 }
 
 export interface Product {
@@ -31,7 +31,7 @@ export interface Product {
     price: number;
     stockQuantity: number;
     category: string;
-    images: string[];
+    images: string | string[];
     createdAt: string;
     updatedAt: string;
 }
@@ -42,39 +42,65 @@ export default function ProductManagement() {
     const { getToken } = useAuth();
 
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
     // Handle modal visibility
-    const showModal = () => {
+    const showModal = (product?: Product) => {
+        setEditingProduct(product || null); // Set product for editing or null for creating
         setIsModalVisible(true);
     };
 
     const handleCancel = () => {
         setIsModalVisible(false);
+        setEditingProduct(null); // Reset editing product when closing the modal
     };
 
     // Handle creating a product (called from CreateProductModal)
-    const handleCreateProduct = async (newProduct: NewProduct) => {
+    const handleCreateOrUpdateProduct = async (newProduct: NewProduct) => {
         const data = { ...newProduct };
-        data.images = newProduct.imageUrls.map((image: ImageObj) => image.imageUrl);
-        data.imageUrls = [];
+        if (newProduct.images && Array.isArray(newProduct.images)) {
+        data.imageUrls = newProduct.images.map((image) => ({ imageUrl: image })); // Convert strings to ImageObj[]
+        }
+        if (typeof newProduct.images === "string") {
+            data.images = newProduct.images.split(',').map((url) => url.trim());
+        }
 
-        console.log(data);
         const token = await getToken();
         try {
-            const response = await ProductApi.create(token, data);
-            if (response && response.data && response.data.metadata) {
-                const newProductData = response.data.metadata; // Assuming metadata is an array
+            let response;
+            if (editingProduct) {
+                // Update product
+                response = await ProductApi.update(token, editingProduct._id, data);
+                notification.success({ message: 'Product updated successfully' });
+            } else {
+                // Create product
+                response = await ProductApi.create(token, data);
+                notification.success({ message: 'Product created successfully' });
+            }
 
-                setProducts((prevProducts) => [newProductData, ...prevProducts]);
-                notification.success({
-                    message: 'Product created successfully',
-                });
+            if (response && response.data && response.data.metadata) {
+                const newProductData = response.data.metadata; // Assuming metadata is an object
+                if (editingProduct) {
+                    // Update the list after editing
+                    setProducts((prevProducts) =>
+                        prevProducts.map((product) =>
+                            product._id === editingProduct._id ? newProductData : product
+                        )
+                    );
+                } else {
+                    // Add the new product to the list
+                    setProducts((prevProducts) => [newProductData, ...prevProducts]);
+                }
             }
         } catch (error) {
-            console.error('Error creating product:', error);
+            console.error('Error creating/updating product:', error);
         }
 
         setIsModalVisible(false); // Close the modal
+    };
+
+    const handleEditProduct = (product: Product) => {
+        showModal(product); // Open modal for editing product
     };
 
     const handleDeleteProduct = async (productId: string) => {
@@ -133,7 +159,8 @@ export default function ProductManagement() {
             title: 'Description',
             dataIndex: 'description',
             key: 'description',
-            render: (text: string) => (text.length > 50 ? text.slice(0, 50) + '...' : text),
+            render: (text: string) => (text.length > 20 ? text.slice(0, 20) + '...' : text),
+
         },
         {
             title: 'Price',
@@ -156,7 +183,8 @@ export default function ProductManagement() {
             title: 'Action',
             key: 'action',
             render: (_: unknown, record: Product) => (
-                <div className="flex justify-center">
+                <div className="grid grid-cols-2">
+                    <Button icon={<EditOutlined />} onClick={() => handleEditProduct(record)} />
                     <Button icon={<DeleteOutlined />} onClick={() => handleDeleteProduct(record._id)} danger />
                 </div>
             ),
@@ -168,13 +196,19 @@ export default function ProductManagement() {
             {/* Filters Component */}
             <Filters searchText={searchText} setSearchText={setSearchText} text="Search by Product ID or Product Name" />
 
-            <Button className="mb-4" type="primary" onClick={showModal}>
+            <Button className="mb-4" type="primary" onClick={() => showModal()}>
                 Create Product
             </Button>
 
             <Table columns={columns} dataSource={filteredData} rowKey="_id" />
 
-            <CreateProductModal visible={isModalVisible} onCancel={handleCancel} onCreate={handleCreateProduct} />
+            <CreateProductModal
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                onSubmit={handleCreateOrUpdateProduct}
+                product={editingProduct}
+            />
+
         </div>
     );
 }

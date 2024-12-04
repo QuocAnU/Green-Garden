@@ -1,35 +1,49 @@
 /* eslint-disable no-unused-vars */
 // CreateProductModal.tsx
 
-import React from 'react';
-import { Modal, Form, Input, InputNumber, Button, Space, Select } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useEffect } from 'react';
+import { Modal, Form, Input, InputNumber, Button, Select } from 'antd';
 
 
-import { NewProduct } from '../../product/page';
+import { NewProduct, Product } from '../../product/page';
 
 interface CreateProductModalProps {
     visible: boolean;
     onCancel: () => void;
-    onCreate: (newProduct: NewProduct ) => void;
+    onSubmit: (product: NewProduct) => void;
+    product?: Product | null
 }
 
-const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCancel, onCreate }) => {
+const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCancel, onSubmit, product }) => {
     const [form] = Form.useForm();
 
-    const handleCreateProduct = (values: NewProduct) => {
-        onCreate(values); 
-        form.resetFields(); 
+    useEffect(() => {
+        if (product) {
+            console.log(product);
+        form.setFieldsValue(product); // Pre-fill form with product data
+        } else {
+        form.resetFields(); // Clear form for new product
+        }
+    }, [product, form]);
+
+    const handleFormSubmit = (values: NewProduct) => {
+        onSubmit(values);
+        form.resetFields();
+    };
+
+    const onCancelModal = () => {
+        onCancel();
+        form.resetFields();
     };
 
     return (
         <Modal
-            title="Create New Product"
+            title={product ? 'Edit Product' : 'Create New Product'}
             visible={visible}
-            onCancel={onCancel}
+            onCancel={onCancelModal}
             footer={null}
         >
-            <Form form={form} onFinish={handleCreateProduct} layout="vertical">
+            <Form form={form} onFinish={handleFormSubmit} layout="vertical">
                 <Form.Item
                     label="Product Name"
                     name="name"
@@ -45,8 +59,8 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                 >
                     <Input.TextArea />
                 </Form.Item>
-
-                <Form.Item
+                <div className="grid grid-cols-2 gap-4">
+                    <Form.Item
                     label="Price"
                     name="price"
                     rules={[{ required: true, message: 'Please enter the product price' }]}
@@ -71,67 +85,64 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                 </Form.Item>
 
                 <Form.Item
-                    label='type'
+                    label='Type'
                     name='type'
                     rules={[{ required: true, message: 'Please select the product type' }]}
                 >
                     <Select>
-                        <Select.Option value="Plant">Plant</Select.Option>
-                        <Select.Option value="Pot">Pot</Select.Option>
+                        <Select.Option value="Plant">cây cảnh</Select.Option>
+                        <Select.Option value="Pot">chậu cảnh</Select.Option>
                     </Select>
                 </Form.Item>
-                <Form.List
-                    name="imageUrls"
-                    initialValue={['']}
-                    rules={[
-                        {
-                            validator: async (_, fields) => {
-                                if (!fields || fields.length < 1) {
-                                    return Promise.reject(new Error('At least one image URL is required'));
-                                }
-                            },
-                        },
-                    ]}
+                </div>
+
+
+                <div className="grid grid-cols-2 gap-4">
+                    <Form.Item
+                        label="Height"
+                        name="height"
+                        rules={[{ required: true, message: 'Please enter the product height' }]}
+                    >
+                        <InputNumber min={1} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Weight"
+                        name="weight"
+                        rules={[{ required: true, message: 'Please enter the product weight' }]}
+                    >
+                        <InputNumber min={1} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Width"
+                        name="width"
+                        rules={[{ required: true, message: 'Please enter the product width' }]}
+                    >
+                        <InputNumber min={1} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Length"
+                        name="length"
+                        rules={[{ required: true, message: 'Please enter the product length' }]}
+                    >
+                        <InputNumber min={1} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                </div>
+
+                <Form.Item
+                    label="ImageUrls ex: https://example.com/image1.jpg,https://example.com/image2.jpg"
+                    name="images"
+                    rules={[{ required: true, message: 'Please upload an image' }]}
                 >
-                    {(fields, { add, remove }) => (
-                        <>
-                            {fields.map(({ key, name, fieldKey }) => {
-                                const validFieldKey = fieldKey ?? key; // Fallback to 'key' if 'fieldKey' is undefined
-
-                                return (
-                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                        <Form.Item
-                                            label={`Image URL ${key + 1}`}
-                                            name={[name, 'imageUrl']}
-                                            fieldKey={[validFieldKey, 'imageUrl']} // Use the fallback validFieldKey here
-                                            rules={[{ required: true, message: 'Please enter an image URL' }]}
-                                        >
-                                            <Input />
-                                        </Form.Item>
-
-                                        <Button danger onClick={() => remove(name)}>
-                                            Remove
-                                        </Button>
-                                    </Space>
-                                );
-                            })}
-
-                            <Form.Item>
-                                <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />}>
-                                    Add Image URL
-                                </Button>
-                            </Form.Item>
-                        </>
-                    )}
-                </Form.List>
-
-
-
-
+                    <Input.TextArea rows={4} />
+                </Form.Item>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                        Create Product
+                        {product ? 'Update Product' : 'Create Product'}
                     </Button>
                 </Form.Item>
             </Form>

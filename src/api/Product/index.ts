@@ -6,7 +6,7 @@ interface Product {
     price: number;
     stockQuantity: number;
     category: string;
-    images: string[];
+    images: string | string[];
 }
 
 const URL = "https://api-tmdt.onrender.com/api/v1/products/user/product";
