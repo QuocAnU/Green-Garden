@@ -3,8 +3,8 @@ import React from "react";
 export default function TopSellingCategory() {
   const categories = [
     { name: "Bonsai", value: 4567, color: "bg-blue-500", size: "w-40 h-40" },
-    { name: "Cactus", value: 3167, color: "bg-blue-300", size: "w-32 h-32" },
-    { name: "Orchid", value: 1845, color: "bg-green-500", size: "w-28 h-28" },
+    { name: "Sen Đá", value: 3167, color: "bg-blue-300", size: "w-32 h-32" },
+    { name: "Xương Rồng", value: 1845, color: "bg-green-500", size: "w-28 h-28" },
     ];
 
 
