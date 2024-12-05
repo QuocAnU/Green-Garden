@@ -26,12 +26,12 @@ const PolicyContent: React.FC = () => {
                   email, điện thoại, địa chỉ khách hàng trong mục liên hệ. Đây
                   là các thông tin mà chúng tôi  cần thành viên cung cấp bắt
                   buộc khi gửi thông tin nhờ tư vấn hay muốn mua sản phẩm và để
-                  chúng tôi   liên hệ xác nhận lại với khách hàng trên website
+                  chúng tôi  liên hệ xác nhận lại với khách hàng trên website
                   nhằm đảm bảo quyền lợi cho cho người tiêu dùng. Các thành viên
                   sẽ tự chịu trách nhiệm về bảo mật và lưu giữ mọi hoạt động sử
                   dụng dịch vụ dưới thông tin mà mình cung cấp và hộp thư điện
                   tử của mình. Ngoài ra, thành viên có trách nhiệm thông báo kịp
-                  thời cho webiste chúng tôi   về những hành vi sử dụng trái
+                  thời cho webiste chúng tôi  về những hành vi sử dụng trái
                   phép, lạm dụng, vi phạm bảo mật, lưu giữ tên đăng ký và mật
                   khẩu của bên thứ ba để có biện pháp giải quyết phù hợp.
                 </p>
@@ -85,7 +85,7 @@ const PolicyContent: React.FC = () => {
                   Dữ liệu cá nhân của thành viên sẽ được lưu trữ cho đến khi có
                   yêu cầu ban quản trị hủy bỏ. Còn lại trong mọi trường hợp
                   thông tin cá nhân thành viên sẽ được bảo mật trên máy chủ của
-                  chúng tôi   
+                  chúng tôi
                 </p>
               </div>
             </div>
@@ -119,11 +119,10 @@ const PolicyContent: React.FC = () => {
               </h4>
               <div className="ml-6">
                 <p className="text-gray-700">
-                  Địa chỉ: 256 Bình Thành, Bình Hưng Hòa B, Bình Tân, Hồ Chí
-                  Minh
+                  Địa chỉ: 268 Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh
                 </p>
                 <p className="text-gray-700">
-                  ĐT: 08 9979 9968 | Email: support@mowgarden.com
+                  ĐT: 08 9979 9968 | Email: support@greengarden.com
                 </p>
               </div>
             </div>
@@ -192,7 +191,7 @@ const PolicyContent: React.FC = () => {
               </h4>
               <div className="ml-6 space-y-2">
                 <p className="text-gray-700">
-                  • Quý khách cần giữ các nhãn về việc đã mua hàng tại MOW Garden theo đơn mua hàng, biên nhận giao hàng, sao kê của ngân hàng
+                  • Quý khách cần giữ các nhãn về việc đã mua hàng tại Green Garden theo đơn mua hàng, biên nhận giao hàng, sao kê của ngân hàng
                 </p>
                 <p className="text-gray-700">
                   • Sản phẩm không nằm trong danh mục hạn chế đổi trả
@@ -202,7 +201,7 @@ const PolicyContent: React.FC = () => {
                 </p>
               </div>
             </div>
-  
+
             {/* Quy trình thực hiện đổi trả hàng */}
             <div>
               <h4 className="text-xl font-semibold text-green-700">
@@ -219,14 +218,14 @@ const PolicyContent: React.FC = () => {
                   • Đối với hàng hoá nhỏ và đơn hàng các tỉnh thành khác: quý khách vui lòng gửi trực tuyến/vận chuyển tới cửa hàng hoặc kho hàng gần nhất để đổi trả
                 </p>
                 <p className="text-gray-700">
-                  • Đối với hàng hoá cồng kềnh đã lắp ráp: MOW Garden sẽ bảo hành tận nơi tại TP.HCM cho quý khách
+                  • Đối với hàng hoá cồng kềnh đã lắp ráp: Green Garden sẽ bảo hành tận nơi tại TP.HCM cho quý khách
                 </p>
                 <p className="text-gray-700">
                   • Quý khách hàng vui lòng kiểm tra kỹ sản phẩm một lần nữa trước khi ký nhận đổi trả hàng
                 </p>
               </div>
             </div>
-  
+
             <div>
               <h4 className="text-xl font-semibold text-green-700">
                 3. Quy định đổi trả bảo hành
@@ -252,7 +251,7 @@ const PolicyContent: React.FC = () => {
                   <p className="text-gray-700">- Hở đinh, ốc</p>
                   <p className="text-gray-700">- Biến dạng sản phẩm (do vận chuyển, do môi trường bảo quản từ phía nhà cung cấp, do quy trình sản xuất...)</p>
                 </div>
-  
+
                 <h5 className="font-medium text-green-600 mt-4">3.2. Không áp dụng đổi trả đối với những trường hợp sau:</h5>
                 <p className="text-gray-700">
                   • Các sản phẩm trong Chương trình Giảm giá và Khuyến mại hoặc từ Cửa hàng Giảm giá
@@ -268,7 +267,7 @@ const PolicyContent: React.FC = () => {
                 </p>
               </div>
             </div>
-     
+
             <div>
               <h4 className="text-xl font-semibold text-green-700">
                 4. Thời gian giải quyết các đơn hàng đổi trả
@@ -285,14 +284,14 @@ const PolicyContent: React.FC = () => {
                 </p>
               </div>
             </div>
-  
+
             <div>
               <h4 className="text-xl font-semibold text-green-700">
                 5. Phí vận chuyển đổi sản phẩm đổi trả/bảo hành
               </h4>
               <div className="ml-6 space-y-2">
                 <p className="text-gray-700">
-                  • MOW Garden bảo hành miễn phí đổi với các sản phẩm cùng kênh trong thời hạn bảo hành
+                  • Green Garden bảo hành miễn phí đổi với các sản phẩm cùng kênh trong thời hạn bảo hành
                 </p>
                 <p className="text-gray-700">
                   • Quý khách thanh toán phí vận chuyển đối với các đơn hàng đổi trả theo biểu phí tại mục II.3
@@ -311,7 +310,7 @@ const PolicyContent: React.FC = () => {
           <h2 className="text-2xl font-bold text-green-800 mb-8">
             Chính sách thanh toán
           </h2>
-  
+
           <div className="space-y-6">
             {/* Các hình thức thanh toán */}
             <div>
@@ -323,7 +322,7 @@ const PolicyContent: React.FC = () => {
                   • Thanh toán trực tiếp tiền mặt
                 </p>
                 <p className="text-gray-700">
-                  • Thanh toán qua cổng thanh toán trực tiếp trên website mowgarden.com
+                  • Thanh toán qua cổng thanh toán trực tiếp trên website greengarden.com
                 </p>
                 <p className="text-gray-700">
                   • Thanh toán khi nhận được hàng (COD) chỉ áp dụng cho khách hàng tại TP.HCM
@@ -333,29 +332,29 @@ const PolicyContent: React.FC = () => {
                 </p>
               </div>
             </div>
-  
+
             {/* Thông tin các tài khoản */}
             <div>
-            <h4 className="text-xl font-semibold text-green-700">
-              2. Thông tin chi tiết về số tài khoản
-            </h4>
-            <div className="ml-6 space-y-4">
-              <div>
-                <p className="text-gray-700 font-medium">Ngân hàng TMCP Ngoại Thương Việt Nam</p>
-                <p className="text-gray-700">Chi nhánh Tân Bình</p>
-                <p className="text-gray-700">Chủ tài khoản: Nguyễn Trọng Thưởng</p>
-                <p className="text-gray-700">Số Tài Khoản: 0071 000 097 309</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-700 font-medium">Ngân hàng TMCP Công Thương Việt Nam</p>
-                <p className="text-gray-700">Chi nhánh Chợ Lớn</p>
-                <p className="text-gray-700">Chủ tài khoản: Nguyễn Trọng Thưởng</p>
-                <p className="text-gray-700">Số Tài Khoản: 1088 6930 9024</p>
+              <h4 className="text-xl font-semibold text-green-700">
+                2. Thông tin chi tiết về số tài khoản
+              </h4>
+              <div className="ml-6 space-y-4">
+                <div>
+                  <p className="text-gray-700 font-medium">Ngân hàng TMCP Ngoại Thương Việt Nam</p>
+                  <p className="text-gray-700">Chi nhánh Tân Bình</p>
+                  <p className="text-gray-700">Chủ tài khoản: Nguyễn Trọng Thưởng</p>
+                  <p className="text-gray-700">Số Tài Khoản: 0071 000 097 309</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-700 font-medium">Ngân hàng TMCP Công Thương Việt Nam</p>
+                  <p className="text-gray-700">Chi nhánh Chợ Lớn</p>
+                  <p className="text-gray-700">Chủ tài khoản: Nguyễn Trọng Thưởng</p>
+                  <p className="text-gray-700">Số Tài Khoản: 1088 6930 9024</p>
+                </div>
               </div>
             </div>
-          </div>
-  
+
             {/* Nội dung tin chú ý */}
             <div>
               <h4 className="text-xl font-semibold text-green-700">
