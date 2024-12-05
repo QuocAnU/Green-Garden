@@ -79,7 +79,7 @@ export const Header = () => {
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            <Image src={Logo} className="h-12 w-30 object-fit" alt="Logo" />
+            <Image src={Logo} className="h-12 w-full object-fit" alt="Logo" />
           </a>
           <div className="flex justify-center items-center p-2 gap-12 flex-shrink-0">
             <Link key="home" href="/" className={navLinkClass("/")}>
@@ -108,6 +108,14 @@ export const Header = () => {
               className={navLinkClass("/lienhe")}
             >
               Liên hệ
+            </Link>
+
+            <Link
+              key="policy"
+              href="/policy"
+              className={navLinkClass("/policy")}
+            >
+              Chính sách
             </Link>
 
             {userRole === "admin" && (
