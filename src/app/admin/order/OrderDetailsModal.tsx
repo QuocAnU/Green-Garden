@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Spin } from 'antd';
 import OrderApi from '@/api/Order';
 import ShipmentApi from '@/api/Shipment';
 import './OrderDetailsModal.css';
 
-import { useAuth, useUser } from '@clerk/nextjs';
+import { useAuth } from '@clerk/nextjs';
 
 import { Shipment } from '@/api/Shipment';
 
@@ -29,7 +29,8 @@ interface OrderDetails {
   status: string;
   createdAt: string;
   updatedAt: string;
-  orderItems: orderItems[]
+  orderItems: orderItems[];
+  addressTo: Shipment;
 }
 
 interface OrderDetailsModalProps {
@@ -41,10 +42,8 @@ interface OrderDetailsModalProps {
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose, orderID }) => {
 
   const [order, setOrder] = useState<OrderDetails>();
-  const { getToken } = useAuth();
-  const {user} = useUser(); 
-  const unsafeMetadata  = user?.unsafeMetadata || {};
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const { getToken } = useAuth(); 
 
   useEffect(() => {
     if (orderID) {
@@ -63,21 +62,23 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
 
   const handleOnPrint = async ()  => {
     const token = await getToken();
-    const data: Shipment = {
-      name: typeof unsafeMetadata?.name === 'string' ? unsafeMetadata.name : order?.customerName ?? '',
-      email: typeof unsafeMetadata?.email === 'string' ? unsafeMetadata.email : order?.email ?? '',
-      phone: typeof unsafeMetadata?.phone === 'string' ? unsafeMetadata.phone : order?.phone ?? '',
-      city: typeof unsafeMetadata?.city === 'string' ? unsafeMetadata.city : '',
-      state: typeof unsafeMetadata?.state === 'string' ? unsafeMetadata.state : '',
-      country: typeof unsafeMetadata?.country === 'string' ? unsafeMetadata.country : '',
-      validated: true,
-      object_purpose: 'PURCHASE',
-      company: typeof unsafeMetadata?.company === 'string' ? unsafeMetadata.company : '',
-      street1: typeof unsafeMetadata?.street1 === 'string' ? unsafeMetadata.street1 : '',
-      street2: typeof unsafeMetadata?.street2 === 'string' ? unsafeMetadata.street2 : '',
-      zip: typeof unsafeMetadata?.zip === 'string' ? unsafeMetadata.zip : '',
-      metadata: "Home Office",
-    };
+    const data = {
+      name: order?.addressTo?.name || "",
+      email: order?.addressTo?.email || "",
+      phone: order?.addressTo?.phone || "",
+      city: order?.addressTo?.city || "",
+      state: order?.addressTo?.state || "",
+      country: order?.addressTo?.country || "",
+      validated: order?.addressTo?.validated || false,
+      object_purpose: order?.addressTo?.object_purpose || "",
+      company: order?.addressTo?.company || "",
+      street1: order?.addressTo?.street1 || "",
+      street2: order?.addressTo?.street2 || "",
+      zip: order?.addressTo?.zip || "",
+      metadata: order?.addressTo?.metadata || "",
+    }
+
+    setLoading(true);
 
     try {
       const response = await ShipmentApi.create(token, orderID, data);
@@ -86,6 +87,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
       }
     } catch (error) {
       console.error('Error fetching order:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -104,6 +107,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
         </Button>,
       ]}
     >
+      <Spin spinning={loading}>
       {order ? (
         <div className="order-details" id="order-details">
           <div className="order-header">
@@ -138,7 +142,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ visible, onClose,
         </div>
       ) : (
         <p>No order details available.</p>
-      )}
+      )} 
+      </Spin>
     </Modal>
   );
 };

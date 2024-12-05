@@ -73,7 +73,7 @@ export default function DashboardPage() {
         <DashboardCard title="New Orders" value={countOrders} change="+2.00%" icon = {faCartShopping} />
         <DashboardCard title="Total Income" value="$74,567" change="+5.45%" icon = {faChartLine} />
         <DashboardCard title="Total Expense" value="$24,567" change="-2.00%" icon = {faChartPie} />
-        <DashboardCard title="New Orders" value="34,567" change="+2.00%" icon = {faUser} />
+        <DashboardCard title="New Customers" value="100" change="+2.00%" icon = {faUser} />
       </div>
       <div className="flex gap-6">
         <div className="flex-1 bg-white p-4 rounded-lg shadow">
