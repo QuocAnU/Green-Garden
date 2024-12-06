@@ -123,8 +123,8 @@ export default function OrderManagement() {
         },
         {
             title: 'Total',
-            dataIndex: 'totalAmount',
-            key: 'totalAmount',
+            dataIndex: 'totalPrice',
+            key: 'totalPrice',
             render: (text: number) => `$${text}`,
         },
 

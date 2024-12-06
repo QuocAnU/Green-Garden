@@ -90,8 +90,9 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({ visible, onCanc
                     rules={[{ required: true, message: 'Please select the product type' }]}
                 >
                     <Select>
-                        <Select.Option value="Plant">cây cảnh</Select.Option>
-                        <Select.Option value="Pot">chậu cảnh</Select.Option>
+                        <Select.Option value="Cây cảnh">Cây cảnh</Select.Option>
+                        <Select.Option value="Chậu cảnh">Chậu cảnh</Select.Option>
+                        <Select.Option value="Phụ kiện trồng cây">Phụ kiện trồng cây</Select.Option>
                     </Select>
                 </Form.Item>
                 </div>
