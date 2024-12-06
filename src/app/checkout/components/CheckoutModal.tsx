@@ -41,8 +41,8 @@ const Modal = ({ setShowCheckoutModal, orderDetail }: { setShowCheckoutModal: Di
 
     const data = {
         paymentMethod: "PayOS",
-        // amount: orderDetail?.newOrder.totalPrice ? orderDetail?.newOrder.totalPrice : 0,
-        amount: 10000,
+        amount: orderDetail?.newOrder.totalPrice ? orderDetail?.newOrder.totalPrice : 0,
+        // amount: 10000,
         orderCode: orderDetail?.newOrder.orderCode ? orderDetail?.newOrder.orderCode : 0,
         description: 'Payment',
         items: orderItem,
