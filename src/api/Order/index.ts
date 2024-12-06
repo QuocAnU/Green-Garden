@@ -14,7 +14,7 @@ const OrderApi = {
     },
 
     create: async (token: string | null, data: OrderCheckout[]) => {
-        return await POST(URL, token, "", data);
+        return await POST(`${URL}/user/orders`, token, "", data);
     },
 
     getOrderDetail: async (token: string | null, id: string) => {
