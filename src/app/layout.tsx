@@ -31,43 +31,43 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-        <html lang="en">
-          <head>
-            {/* External FontAwesome CSS */}
-            <link
-              rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-              integrity="sha384-nqcTpC+Pf7TV3V93gKJ6i0Dhd4g+4EaUS5Btzf8DC3nYTCILfWqKx+yz7Gl06VeD"
-              crossOrigin="anonymous"
-            />
-            
-            {/* SEO Metadata */}
-            <Head>
-              <meta name="description" content={metadata.description} />
-              <meta name="keywords" content={metadata.keywords} />
-              <meta property="og:title" content={metadata.openGraph.title} />
-              <meta property="og:description" content={metadata.openGraph.description} />
-              <meta property="og:url" content={metadata.openGraph.url} />
-              <meta property="og:site_name" content={metadata.openGraph.site_name} />
-              <meta property="og:image" content={metadata.openGraph.images[0].url} />
-              <meta property="og:image:width" content={metadata.openGraph.images[0].width.toString()} />
-              <meta property="og:image:height" content={metadata.openGraph.images[0].height.toString()} />
-              <meta name="twitter:card" content={metadata.twitter.card} />
-              <meta name="twitter:title" content={metadata.twitter.title} />
-              <meta name="twitter:description" content={metadata.twitter.description} />
-              <meta name="twitter:image" content={metadata.twitter.image} />
-            </Head>
-          </head>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} ${openSans.className} antialiased`}
-          >
-            <ClerkLoaded>
-              <Header />
-              {children}
-              <Footer />
-            </ClerkLoaded>
-          </body>
-        </html>
+      <html lang="en">
+        <head>
+          {/* External FontAwesome CSS */}
+          <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+            integrity="sha384-nqcTpC+Pf7TV3V93gKJ6i0Dhd4g+4EaUS5Btzf8DC3nYTCILfWqKx+yz7Gl06VeD"
+            crossOrigin="anonymous"
+          />
+
+          {/* SEO Metadata */}
+          <Head>
+            <meta name="description" content={metadata.description} />
+            <meta name="keywords" content={metadata.keywords} />
+            <meta property="og:title" content={metadata.openGraph.title} />
+            <meta property="og:description" content={metadata.openGraph.description} />
+            <meta property="og:url" content={metadata.openGraph.url} />
+            <meta property="og:site_name" content={metadata.openGraph.site_name} />
+            <meta property="og:image" content={metadata.openGraph.images[0].url} />
+            <meta property="og:image:width" content={metadata.openGraph.images[0].width.toString()} />
+            <meta property="og:image:height" content={metadata.openGraph.images[0].height.toString()} />
+            <meta name="twitter:card" content={metadata.twitter.card} />
+            <meta name="twitter:title" content={metadata.twitter.title} />
+            <meta name="twitter:description" content={metadata.twitter.description} />
+            <meta name="twitter:image" content={metadata.twitter.image} />
+          </Head>
+        </head>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} ${openSans.className} antialiased bg-green-50`}
+        >
+          <ClerkLoaded>
+            <Header />
+            {children}
+            <Footer />
+          </ClerkLoaded>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

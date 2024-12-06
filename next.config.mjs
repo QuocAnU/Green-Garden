@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['example.com'], // Add your allowed domains here
+        domains: ['vuoncayviet.com', 'example.com', 'images.grove.co'], // Add your allowed domains here
       },
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { Row, Col, Button } from "antd";
 import ProductCard from "./ProductCard";
 import { FilterOutlined } from "@ant-design/icons";
 interface Product {
+  category: string;
   _id: string;
   name: string;
   price: number;
@@ -13,12 +15,33 @@ interface Product {
   images?: string[];
 }
 
-const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
+interface ProductListProps {
+  products: Product[];
+  category: string;
+  setCategory: (category: string) => void;
+}
+
+const ProductList: React.FC<ProductListProps> = ({ products, category, setCategory }) => {
   const [productList, setProductList] = useState<Product[]>(products || []);
+  const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
+  const [displayCount, setDisplayCount] = useState<number>(9);
 
   useEffect(() => {
-    setProductList(products);
-  }, [products]);
+    if (category === "") {
+      setProductList(products);
+    } else {
+      const newProductsList = products.filter(item => item?.category === category);
+      setProductList(newProductsList);
+    }
+  }, [products, category]);
+
+  useEffect(() => {
+    setVisibleProducts(productList.slice(0, displayCount));
+  }, [productList, displayCount]);
+
+  const handleShowMore = () => {
+    setDisplayCount(prevCount => prevCount + 9);
+  };
 
   return (
     <div className="px-6 max-w-screen-lg mx-auto">
@@ -28,17 +51,17 @@ const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
           <span className="text-gray-500">({productList.length} sản phẩm)</span>
         </div>
 
-        <Button icon={<FilterOutlined />} className="hover:bg-gray-200">
-          filter & sort
+        <Button icon={<FilterOutlined />} className="hover:bg-gray-200" onClick={() => setCategory("")}>
+          Tất cả sản phẩm
         </Button>
       </div>
 
       {/* Products grid */}
-      {productList?.length === 0 ? (
+      {visibleProducts?.length === 0 ? (
         <div className="text-center text-gray-500">Không có sản phẩm</div>
       ) : (
         <Row gutter={[16, 16]}>
-          {productList?.map((product) => (
+          {visibleProducts?.map((product) => (
             <Col key={product._id} xs={24} sm={12} md={8}>
               <ProductCard
                 id={product?._id}
@@ -62,6 +85,7 @@ const ProductList: React.FC<{ products: Product[] }> = ({ products }) => {
           <Button
             type="primary"
             className="bg-green-800 hover:bg-green-700 w-52"
+            onClick={handleShowMore}
           >
             Xem thêm
           </Button>

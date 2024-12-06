@@ -1,7 +1,7 @@
 import { sansitaSwash } from "@/app/layout"
 import Image from "next/image"
 import { Product } from "@/types/product"
-import Plant from '@/images/indoor-plant.jpg';
+// import Plant from '@/images/indoor-plant.jpg';
 import { useRouter } from "next/navigation";
 export const BestSeller = ({ products }: { products: Product[] }) => {
     const router = useRouter();
@@ -13,14 +13,14 @@ export const BestSeller = ({ products }: { products: Product[] }) => {
             </div>
             <div className='flex justify-center items-start gap-8'>
                 {products.slice(0, 3).map((item, idx) =>
-                    <div key={idx} className='flex flex-col justify-center items-start gap-4 p-5 rounded-[16px] bg-[#FFF]' style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}>
+                    <div key={idx} className='flex flex-col justify-center items-start gap-4 p-5 rounded-[16px] bg-[#FFF] hover:scale-110' style={{ boxShadow: "0px 8px 23px 0px rgba(80, 107, 82, 0.13)" }}>
                         <div className="relative rounded-[8px] h-[300px] w-[300px] overflow-hidden">
                             <div
-                                className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.2)] to-[rgba(0,0,0,0.2)]"
+                                className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.4)] to-[rgba(0,0,0,0.4)]"
                             ></div>
                             <Image
-                                // src={item.images ? item.images[0] : Plant}
-                                src={Plant}
+                                src={item.images[0]}
+                                // src={Plant}
                                 width={500}
                                 height={500}
                                 className="h-full w-full object-cover"

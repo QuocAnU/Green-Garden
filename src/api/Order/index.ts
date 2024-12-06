@@ -1,6 +1,6 @@
 import { GET, POST } from "../APIInstance";
 
-const URL = 'https://api-tmdt.onrender.com/api/v1/orders';
+const URL = 'https://api-tmdt.onrender.com/api/v1/orders/user/orders';
 
 interface OrderCheckout {
     quantity: number,
@@ -18,7 +18,7 @@ const OrderApi = {
     },
 
     getOrderDetail: async (token: string | null, id: string) => {
-        return await GET(`${URL}/user/orders/${id}`, token, '');
+        return await GET(`${URL}/${id}`, token, '');
     },
 }
 

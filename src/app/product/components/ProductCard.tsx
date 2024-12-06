@@ -45,6 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               "https://media.istockphoto.com/id/819464736/vi/anh/c%C3%A2y-s%E1%BB%93i-tr%C6%B0%E1%BB%9Fng-th%C3%A0nh-b%E1%BB%8B-c%C3%B4-l%E1%BA%ADp-tr%C3%AAn-n%E1%BB%81n-tr%E1%BA%AFng.jpg?s=1024x1024&w=is&k=20&c=XM-kVEVXQzU3ZNXEJ3qmy-mW46gSQj5xS5RTd8ngGw8="
             }
             style={cardCoverStyle}
+            className="w-full h-full"
           />
           {discount && (
             <Badge.Ribbon

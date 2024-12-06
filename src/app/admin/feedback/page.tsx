@@ -1,33 +1,41 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import Filters from './../components/Filters'; // Adjust the import path as necessary 
+import { useAuth } from '@clerk/clerk-react';
+import FeedbackApi from '@/api/Contact';
 
-// Sample data for feedback
-const initialFeedbackData = [
-    {
-        key: '1',
-        id: 'F12345',
-        name: 'John Doe',
-        message: 'Great service, I am very happy with the product!',
-    },
-    {
-        key: '2',
-        id: 'F67890',
-        name: 'Jane Smith',
-        message: 'The delivery was delayed, but the quality is good.',
-    },
-    // Add more sample data as needed
-];
+interface Feedback {
+    _id: string;
+    name: string;
+    email: string;
+    message: string;
+    createdAt: string;
+    updatedAt: string;
+}
 
-export default function FeedbackManagement() {
-    const [data] = useState(initialFeedbackData);
+export default function FeedbackManagement(){
     const [searchText, setSearchText] = useState('');
+    const { getToken } = useAuth(); 
+    const [data, setFeedback] = useState<Feedback[]>([]);
+
+    useEffect(() => {
+          const fetchFeedback = async () => {
+            const token = await getToken();
+            try {
+              const feedback = await FeedbackApi.getAll(token);
+              setFeedback(feedback.data.metadata);
+            } catch (error) {
+              console.error('Error fetching feedback:', error);
+            }
+          }
+          fetchFeedback();
+      }, [getToken]);
 
     // Filter the data based on the search criteria
     const filteredData = data.filter(item => {
-        const isIdMatch = item.id.includes(searchText);
+        const isIdMatch = item._id.includes(searchText);
         const isNameMatch = item.name.toLowerCase().includes(searchText.toLowerCase());
         const isMessageMatch = item.message.toLowerCase().includes(searchText.toLowerCase());
 
@@ -38,8 +46,8 @@ export default function FeedbackManagement() {
     const columns = [
         {
             title: 'Feedback ID',
-            dataIndex: 'id',
-            key: 'id',
+            dataIndex: '_id',
+            key: '_id',
         },
         {
             title: 'Name',
