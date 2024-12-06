@@ -33,7 +33,7 @@ export const CancelItems = ({ item }: { item: itemType[] }) => {
             }
         };
         getAllProduct();
-    }, [getToken]);
+    }, [getToken, item]);
 
     return (
         <>

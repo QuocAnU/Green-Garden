@@ -37,7 +37,7 @@ const Modal = ({ setShowCheckoutModal, orderDetail }: { setShowCheckoutModal: Di
             }
         };
         getOrderItemDetail();
-    }, [getToken]);
+    }, [getToken, orderDetail?.newOrderItems]);
 
     const data = {
         paymentMethod: "PayOS",

@@ -1,4 +1,4 @@
-import { GET, POST, DELETE, PUT } from "../APIInstance";
+import { GET, POST } from "../APIInstance";
 
 interface Payment {
     paymentMethod: string,
