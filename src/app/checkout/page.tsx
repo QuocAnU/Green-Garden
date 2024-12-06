@@ -134,13 +134,7 @@ const ShoppingCart: React.FC = () => {
   }, [paymentList, refetch]);
 
   const handleCancelPayment = (orderCode: string) => {
-    setPendingPayment((prev) => {
-      const canceledPayment = prev.find((payment) => payment.orderCode === orderCode);
-      if (canceledPayment) {
-        setCancelPayment(cancelPayment);
-      }
-      return prev.filter((payment) => payment.orderCode !== orderCode);
-    });
+    setPendingPayment((prev) => prev.filter((payment) => payment.orderCode !== orderCode));
   };
 
   useEffect(() => {
@@ -197,7 +191,6 @@ const ShoppingCart: React.FC = () => {
   };
 
   const handleCheckout = async () => {
-    console.log("Proceeding to checkout with items:", items);
     setShowCheckoutModal(true);
     const orders = items.map(item => ({
       quantity: item.quantity,
@@ -216,6 +209,21 @@ const ShoppingCart: React.FC = () => {
       console.error('Error processing payment', error);
     }
 
+    try {
+      const responses = await Promise.all(
+        items.map((item) =>
+          CartApi.delete(token, item.productId._id)
+        )
+      );
+
+      responses.forEach((response) => {
+        if (response && response.data && response.data.metadata) {
+          console.log(response.data.metadata)
+        }
+      });
+    } catch (error) {
+      console.error('Error deleting cart', error);
+    }
   };
 
   useEffect(() => {
@@ -299,7 +307,7 @@ const ShoppingCart: React.FC = () => {
     },
   ]
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="min-h-screen">
       <div className="max-w-6xl mx-auto py-8 px-4">
         <Tabs
           defaultActiveKey="cart"

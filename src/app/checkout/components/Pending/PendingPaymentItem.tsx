@@ -25,7 +25,7 @@ export const PendingItems = ({ item }: { item: itemType[] }) => {
                         const product = response.data.metadata.find(
                             (product: { name: string }) => product.name === it.name
                         );
-                        return product ? product.images[0] : null; // Default to `null` if no image found
+                        return product ? product.images[0] : null;
                     });
                     setItemImages(images);
                 }
@@ -34,7 +34,7 @@ export const PendingItems = ({ item }: { item: itemType[] }) => {
             }
         };
         getAllProduct();
-    }, [getToken]);
+    }, [getToken, item]);
 
     return (
         <>

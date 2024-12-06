@@ -33,7 +33,7 @@ export const PaidItems = ({ item }: { item: itemType[] }) => {
             }
         };
         getAllProduct();
-    }, [getToken]);
+    }, [getToken, item]);
 
     return (
         <>
