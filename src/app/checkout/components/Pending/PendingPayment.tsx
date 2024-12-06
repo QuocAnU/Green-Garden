@@ -39,7 +39,7 @@ export const PendingPayment = ({ pendingPayment, onCancelPayment }: { pendingPay
             {pendingPayment.length === 0 ? (
                 <Empty description="Danh sách trống" className="py-8" />
             ) : (
-                pendingPayment.map((payment, idx) => (
+                pendingPayment.slice().reverse().map((payment, idx) => (
                     <div key={idx} className="flex flex-col justify-center items-center w-full p-3">
                         <div className="text-[#000] text-[20px] font-[600] text-left w-full">Đơn hàng: {payment._id}</div>
                         <Card className="mb-6 w-full">
