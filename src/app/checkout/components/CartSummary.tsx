@@ -53,7 +53,7 @@ export const CartSummaryComponent: React.FC<CartSummaryProps> = ({
           onClick={onCheckout}
           className="mt-6 bg-green-500 hover:bg-green-600"
         >
-          Thanh toán
+          Đặt hàng
         </Button>
       </div>
     </div>
